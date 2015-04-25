@@ -1,16 +1,18 @@
-<html>
-	<form action="/signup" method="post">
-		<label>Full name: 
-			<input type="text" id="name" name="name" class="forminput" placeholder="First Last">
-		</label>
+	<style>
+	.log_in input {margin-bottom:5px;}
+	</style>
+	<h2 style="color:#777">Create an Account</h2>
+	<form action="/login" method="post" class="log_in">
 
-		<label>E-mail address: 
-			<input type="text" id="email" name="email" class="forminput" placeholder="Email">
-		</label>
-		<label>Password: 
-			<input type="password" id="password" name="password" class="forminput" placeholder="Password">
-		</label>
-		<input type="submit" value="Sign up">
+        <input type="text" id="name" name="name" class="form-control" placeholder="Name" required autofocus>
+
+        <input type="text" id="email" name="email" class="form-control" placeholder="Email address" required autofocus>
+        
+        <label for="inputPassword" class="sr-only">Password</label>
+        <input type="password" id="password" name="password" class="form-control" placeholder="Password" required>
+        
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign Up</button>
+
+
 	</form>
 
-</html>
