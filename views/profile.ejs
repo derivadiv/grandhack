@@ -12,25 +12,29 @@
 
 <h2> Welcome <%=username%> ! </h2>
 
-<h3>Events: </h3>
+<h3>Current Events: </h3>
 <% if (user.events.length > 0) { %>
 	<table> 
 		<thead> <tr> 
 			<th> Title </th> <th> Date </th> <th> Details </th>	
 		</tr> </thead>
 		<tbody>
-		<% for (var e in user.events){ 
-			if (user.events[e].title){	%>
-			<tr>
-				<td><%=user.events[e].title%></td> 	
-				<td><%=user.events[e].dateAdded%></td>
-				<td><a class="details" event=<%=user.events[e]%> href="#">Details</a></td>
-			</tr>
-		<% }
+		<% for (var e in user.events){
+			if (user.events[e].title){
+				if (user.events[e].dateEnd === undefined){
+			%>
+				<tr>
+					<td><%=user.events[e].title%></td> 	
+					<td><%=user.events[e].dateAdded%></td>
+					<td><a class="details" event=<%=user.events[e]%> href="#">Details</a></td>
+				</tr>
+		<% 		}
+			}
 		} %>
 		</tbody>
 	</table>
 <%
+// TODO: way to see full timeline?
 } else { %>
 	No events yet! Add a new event below.
 <%} %>
