@@ -1,70 +1,5 @@
 <html>
 <% include header %>
-<<<<<<< HEAD
-=======
-
-<%
-	var username = 'Undefined User';
-	if (user.local.email) { 
-		username = user.local.name;
-	} else if (user.facebook.token) {
-		username = user.facebook.name;
-	}
-%>
-
-<h2> Welcome <%=username%> ! </h2>
-
-<h3>Current Events: </h3>
-<% if (user.events.length > 0) { %>
-	<table> 
-		<thead> <tr> 
-			<th> Title </th> <th> Date </th> <th> Details </th>	
-		</tr> </thead>
-		<tbody>
-		<% for (var e in user.events){
-			if (user.events[e].title){
-				if (user.events[e].dateEnd === undefined){
-			%>
-				<tr>
-					<td><%=user.events[e].title%></td> 	
-					<td><%=user.events[e].dateAdded%></td>
-					<td><a class="details" event=<%=user.events[e]%> href="#">Details</a></td>
-				</tr>
-		<% 		}
-			}
-		} %>
-		</tbody>
-	</table>
-<%
-// TODO: way to see full timeline?
-} else { %>
-	No events yet! Add a new event below.
-<%} %>
-
-<h3>Add a new event:</h3>
-<form action="/addevent" method="post">
-	<label>Goal title:
-		<input type="text" id="eventtitle" name="eventtitle" class="form-control">
-	</label>
-	<label>Reason:
-		<input type="text" id="category" name="category" class="form-control">
-	</label>
-	<label>Remind me:
-		<select id="reminders" name="reminders">
-			<option value="day">Every Day</option>
-			<option value="2days">Every Other Day</option>
-			<option value="week">Every Week</option>
-		</select>
-	</label>
-	<label> at time
-		<input type="text" id="remindtime" name="remindtime" class="form-control">
-	</label>
-	<label>Comments:
-		<input type="text" id="comments" name="comments" class="form-control">
-	</label>
-	<input type="submit" value="Add event">
-</form>
->>>>>>> d7200175c90143b13c3bc7be98cd69a74d614cbc
 
 <style type="text/css">
 	.right-panel { border-right: 1px solid #999; height:100%; background-color:#eee;}
@@ -109,6 +44,9 @@
 		No events yet! Add a new event below.
 	<%} %>
 
+
+
+
 	<form action="/addevent" method="post">
 
 		<div class="input-group">
@@ -116,6 +54,26 @@
 		  <input type="text" id="eventtitle" name="eventtitle" class="form-control" placeholder="ex. Monitor blood sugar" aria-describedby="basic-addon1">
 
 		</div>
+
+
+
+	<label>Reason:
+		<input type="text" id="category" name="category" class="form-control">
+	</label>
+	<label>Remind me:
+		<select id="reminders" name="reminders">
+			<option value="day">Every Day</option>
+			<option value="2days">Every Other Day</option>
+			<option value="week">Every Week</option>
+		</select>
+	</label>
+	<label> at time
+		<input type="text" id="remindtime" name="remindtime" class="form-control">
+	</label>
+	<label>Comments:
+		<input type="text" id="comments" name="comments" class="form-control">
+	</label>
+		
 		<div style="text-align:right;margin-top:5px">
 		<input class="btn btn-primary" type="submit" value="Add event">
 		</div>
