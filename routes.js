@@ -38,6 +38,13 @@ module.exports = function(app, usermodel) {
 		});
 	});
 
+	// Update details (todo)
+	app.get('/updateevent', isLoggedIn, function(req, res){
+		res.render('updateevent.ejs', {
+			event: req.body.event // get the user out of session and pass to template
+		});
+	});
+
 	// Add event (only if logged in)
 	app.post('/addevent', isLoggedIn, function(req, res){
 		var events = req.user.events;
