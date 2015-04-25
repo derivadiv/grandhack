@@ -10,12 +10,30 @@
 
 <h2> Welcome <%=username%> ! </h2>
 
-Events: 
-<% for (var e in user.events){%>
-	<%=e.title%>
-<%}%>
+<h3>Events: </h3>
+<% if (user.events.length > 0) { %>
+	<table> 
+		<thead> <tr> 
+			<th> Title </th> <th> Date </th> <th> Details </th>	
+		</tr> </thead>
+		<tbody>
+		<% for (var e in user.events){ 
+			if (user.events[e].title){	%>
+			<tr>
+				<td><%=user.events[e].title%></td> 	
+				<td><%=user.events[e].dateAdded%></td>
+				<td>TODO details</td>
+			</tr>
+		<% }
+		} %>
+		</tbody>
+	</table>
+<%
+} else { %>
+	No events yet! Add a new event below.
+<%} %>
 
-Add a new event?
+<h3>Add a new event:</h3>
 <form action="/addevent" method="post">
 	<label>Goal title:
 		<input type="text" id="eventtitle" name="eventtitle" class="forminput" placeholder="ex. Monitor blood sugar">
