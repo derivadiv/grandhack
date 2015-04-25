@@ -73,6 +73,41 @@ module.exports = function(app, usermodel) {
 		});
 	});
 
+	// Edit event (only if logged in)
+	app.post('/editevent', isLoggedIn, function(req, res){
+		var events = req.user.events;
+
+		pastid = req.body.eventid;
+		//todo query for event id
+
+		var newevent = {
+    		title: req.body.eventtitle,
+    		category: req.body.category,
+    		comments: req.body.comments
+    	};
+
+    	//todo reminder schedule
+
+    	events.push(newevent);
+
+    	usermodel.update({
+			"_id": req.user._id
+		}, {
+			"events": events
+		},{}, function(err, numAffected) {
+			if (err) {
+				console.log('we messed something up, sorry.');
+				res.redirect('back');
+			}
+			else{
+				console.log('something worked. yay?')
+				res.render('profile.ejs', {
+					user: req.user 
+				});
+			}
+		});
+	});
+
 }
 
 // make sure a user is logged in ("route middleware")
