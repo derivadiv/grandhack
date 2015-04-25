@@ -1,0 +1,10 @@
+<%
+	var username = 'Undefined User';
+	if (user.local.email) { 
+		username = user.local.name;
+	} else if (user.facebook.token) {
+		username = user.facebook.name;
+	}
+%>
+
+Welcome <%=username%> !
