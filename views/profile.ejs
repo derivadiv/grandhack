@@ -38,7 +38,23 @@
 <h3>Add a new event:</h3>
 <form action="/addevent" method="post">
 	<label>Goal title:
-		<input type="text" id="eventtitle" name="eventtitle" class="forminput" placeholder="ex. Monitor blood sugar">
+		<input type="text" id="eventtitle" name="eventtitle" class="form-control">
+	</label>
+	<label>Reason:
+		<input type="text" id="category" name="category" class="form-control">
+	</label>
+	<label>Remind me:
+		<select id="reminders" name="reminders">
+			<option value="day">Every Day</option>
+			<option value="2days">Every Other Day</option>
+			<option value="week">Every Week</option>
+		</select>
+	</label>
+	<label> at time
+		<input type="text" id="remindtime" name="remindtime" class="form-control">
+	</label>
+	<label>Comments:
+		<input type="text" id="comments" name="comments" class="form-control">
 	</label>
 	<input type="submit" value="Add event">
 </form>

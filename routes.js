@@ -51,7 +51,10 @@ module.exports = function(app, usermodel) {
 
 		var newevent = {
     		title: req.body.eventtitle,
+    		category: req.body.category,
+    		comments: req.body.comments
     	};
+    	//TODO reminder handling
 
     	events.push(newevent);
 
