@@ -1,4 +1,4 @@
-module.exports = function(app) {
+module.exports = function(app, usermodel) {
 	passport = require('passport');
 	app.get('/', function(req, res) {
 		res.render('index.ejs');
@@ -35,6 +35,34 @@ module.exports = function(app) {
 	app.get('/profile', isLoggedIn, function(req, res){
 		res.render('profile.ejs', {
 			user: req.user // get the user out of session and pass to template
+		});
+	});
+
+	// Add event (only if logged in)
+	app.post('/addevent', isLoggedIn, function(req, res){
+		var events = req.user.events;
+
+		var newevent = {
+    		'title': req.body.eventtitle,
+    	};
+
+    	events.push(newevent);
+
+    	usermodel.update({
+			"_id": req.user._id
+		}, {
+			"events": events
+		},{}, function(err, numAffected) {
+			if (err || numAffected!=1) {
+				console.log('we messed something up, sorry.');
+				res.redirect('back');
+			}
+			else{
+				console.log('something worked. yay?')
+				res.render('profile.ejs', {
+					user: req.user 
+				});
+			}
 		});
 	});
 

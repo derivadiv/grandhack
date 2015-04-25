@@ -55,11 +55,11 @@ app.use(cookieParser());
 //app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/models',express.static(__dirname+'/models'));
+var eventmodel = require('./models/event.js').model;
 var usermodel = require('./models/user.js');
-var eventmodel = require('./models/event.js');
 
 // Routes
-require('./routes.js')(app);
+require('./routes.js')(app, usermodel);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

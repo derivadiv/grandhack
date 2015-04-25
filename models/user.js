@@ -1,6 +1,8 @@
 var mongoose = require('mongoose');
 var bcrypt = require('bcrypt-nodejs');
 
+var eventSchema = require('./event.js').schema;
+
 var userSchema = mongoose.Schema({
 	local:{
 		email: String,
@@ -15,8 +17,8 @@ var userSchema = mongoose.Schema({
     },
     resetPasswordToken: String,
     resetPasswordExpires: Date,
-    events: {type: Object, default: {}},
-    diseases: {type: Object, default: {}}
+    events: [eventSchema],
+    diseases: [String]
 });
 
 // generating a hash, salted 8x

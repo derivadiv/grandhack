@@ -10,4 +10,7 @@ var eventSchema = mongoose.Schema({
 
 
 // create user model, expose to app
-module.exports = mongoose.model('Event', eventSchema);
+module.exports = {
+	model: mongoose.model('Event', eventSchema),
+	schema: eventSchema
+};
