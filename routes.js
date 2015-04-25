@@ -43,7 +43,7 @@ module.exports = function(app, usermodel) {
 		var events = req.user.events;
 
 		var newevent = {
-    		'title': req.body.eventtitle,
+    		title: req.body.eventtitle,
     	};
 
     	events.push(newevent);

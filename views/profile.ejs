@@ -10,9 +10,9 @@
 
 <h2> Welcome <%=username%> ! </h2>
 
-Events: 
+<h3>Events: </h3>
 <% for (var e in user.events){%>
-	<%=e.title%>
+	<p><%=user.events[e].title%></p>
 <%}%>
 
 Add a new event?
