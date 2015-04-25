@@ -12,7 +12,7 @@ module.exports = function(app, usermodel) {
 	}));
 
 	app.get('/login', function(req, res) {
-		res.render('login.ejs', {
+		res.render('index.ejs', {
 			message: 'Invalid credentials.'
 		});
 	});
@@ -26,7 +26,7 @@ module.exports = function(app, usermodel) {
 
 	// Signup fail
 	app.get('/signupfail', function(req, res) {
-		res.render('signup.ejs', {
+		res.render('index.ejs', {
 			message: 'That e-mail address is taken.'
 		});
 	});	
@@ -51,7 +51,10 @@ module.exports = function(app, usermodel) {
 
 		var newevent = {
     		title: req.body.eventtitle,
+    		category: req.body.category,
+    		comments: req.body.comments
     	};
+    	//TODO reminder handling
 
     	events.push(newevent);
 
@@ -78,35 +81,69 @@ module.exports = function(app, usermodel) {
 		var events = req.user.events;
 
 		pastid = req.body.eventid;
-		//todo query for event id
-
-		var newevent = {
-    		title: req.body.eventtitle,
-    		category: req.body.category,
-    		comments: req.body.comments
-    	};
-
-    	//todo reminder schedule
-
-    	events.push(newevent);
-
-    	usermodel.update({
-			"_id": req.user._id
-		}, {
-			"events": events
-		},{}, function(err, numAffected) {
-			if (err) {
-				console.log('we messed something up, sorry.');
-				res.redirect('back');
-			}
-			else{
-				console.log('something worked. yay?')
-				res.render('profile.ejs', {
-					user: req.user 
+		for (var e in events) {
+			if (events[e]._id == pastid) {
+				var newevent = {
+		    		title: req.body.eventtitle,
+		    		category: req.body.category,
+		    		comments: req.body.comments
+		    	};
+		    	// TODO reminder schedule handling
+		    	events[e] = newevent;
+		    	usermodel.update({
+					"_id": req.user._id
+				}, {
+					"events": events
+				},{}, function(err, numAffected) {
+					if (err) {
+						console.log('we messed something up, sorry.');
+						res.redirect('back');
+					}
+					else{
+						console.log('something worked. yay?')
+						res.render('profile.ejs', {
+							user: req.user 
+						});
+					}
 				});
 			}
-		});
+		}
+		// if we get here, we failed :(
+
 	});
+
+	// Delete event (only if logged in)
+	app.post('/completeevent', isLoggedIn, function(req, res){
+		var events = req.user.events;
+
+		pastid = req.body.eventid;
+		for (var e in events) {
+			if (events[e]._id == pastid) {
+				var newevent = events[e];
+		    	// TODO reminder schedule handling
+		    	events[e] = newevent;
+		    	usermodel.update({
+					"_id": req.user._id
+				}, {
+					"events": events
+				},{}, function(err, numAffected) {
+					if (err) {
+						console.log('we messed something up, sorry.');
+						res.redirect('back');
+					}
+					else{
+						console.log('something worked. yay?')
+						res.render('profile.ejs', {
+							user: req.user 
+						});
+					}
+				});
+			}
+		}
+		// if we get here, we failed :(
+
+	});
+
 
 }
 
