@@ -1,13 +1,17 @@
-<html>
-	<form action="/login" method="post">
-		<label>E-mail address: 
-			<input type="text" id="email" name="email" class="forminput" placeholder="Email">
-		</label>
-		<label>Password: 
-			<input type="password" id="password" name="password" class="forminput" placeholder="Password">
-		</label>
-		<input type="submit" value="Log in">
+	<style>
+	.log_in input {margin-bottom:5px;}
+	</style>
+	<h2>Log in</h2>
+	<form action="/login" method="post" class="log_in">
+
+        <input type="text" id="email" name="email" class="form-control" placeholder="Email address" required autofocus>
+        
+        <label for="inputPassword" class="sr-only">Password</label>
+        <input type="password" id="password" name="password" class="form-control" placeholder="Password" required>
+        
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+
+
 	</form>
 
 	<a href="/forgot">Forgot your password?</a>
-</html>
