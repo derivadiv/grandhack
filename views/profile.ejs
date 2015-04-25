@@ -1,45 +1,63 @@
 <html>
-<%
-	var username = 'Undefined User';
-	if (user.local.email) { 
-		username = user.local.name;
-	} else if (user.facebook.token) {
-		username = user.facebook.name;
-	}
-%>
+<% include header %>
 
-<h2> Welcome <%=username%> ! </h2>
+<style type="text/css">
+	.right-panel { border-right: 1px solid #999; height:100%; background-color:#eee;}
+	.right-panel h2 {color:#ccc;}
+</style>
 
-<h3>Events: </h3>
-<% if (user.events.length > 0) { %>
-	<table> 
-		<thead> <tr> 
-			<th> Title </th> <th> Date </th> <th> Details </th>	
-		</tr> </thead>
-		<tbody>
-		<% for (var e in user.events){ 
-			if (user.events[e].title){	%>
-			<tr>
-				<td><%=user.events[e].title%></td> 	
-				<td><%=user.events[e].dateAdded%></td>
-				<td><a class="details" event=<%=user.events[e]%> href="#">Details</a></td>
-			</tr>
-		<% }
-		} %>
-		</tbody>
-	</table>
-<%
-} else { %>
-	No events yet! Add a new event below.
-<%} %>
+<div class="container-fluid">
+<div class="row">
+<div class="col-sm-2 right-panel">
+	<%
+		var username = 'Undefined User';
+		if (user.local.email) { 
+			username = user.local.name;
+		} else if (user.facebook.token) {
+			username = user.facebook.name;
+		}
+	%>
 
-<h3>Add a new event:</h3>
-<form action="/addevent" method="post">
-	<label>Goal title:
-		<input type="text" id="eventtitle" name="eventtitle" class="forminput" placeholder="ex. Monitor blood sugar">
-	</label>
-	<input type="submit" value="Add event">
-</form>
+	<h2> Welcome <%=username%> </h2>
+</div>
+<div class="col-sm-10">
 
+	<% if (user.events.length > 0) { %>
+		<table class="table table-hover"> 
+			<thead> <tr> 
+				<th> Title </th> <th> Date </th> <th> Details </th>	
+			</tr> </thead>
+			<tbody>
+			<% for (var e in user.events){ 
+				if (user.events[e].title){	%>
+				<tr>
+					<td><%=user.events[e].title%></td> 	
+					<td><%=user.events[e].dateAdded%></td>
+					<td><a class="details" event=<%=user.events[e]%> href="#">Details</a></td>
+				</tr>
+			<% }
+			} %>
+			</tbody>
+		</table>
+	<%
+	} else { %>
+		No events yet! Add a new event below.
+	<%} %>
+
+	<form action="/addevent" method="post">
+
+		<div class="input-group">
+		  <span class="input-group-addon" id="basic-addon1">New Goal</span>
+		  <input type="text" id="eventtitle" name="eventtitle" class="form-control" placeholder="ex. Monitor blood sugar" aria-describedby="basic-addon1">
+
+		</div>
+		<div style="text-align:right;margin-top:5px">
+		<input class="btn btn-primary" type="submit" value="Add event">
+		</div>
+	</form>
+
+	</div>
+</div>
+</div>
 
 </html>
