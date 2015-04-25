@@ -53,7 +53,7 @@ module.exports = function(app, usermodel) {
 		}, {
 			"events": events
 		},{}, function(err, numAffected) {
-			if (err || numAffected!=1) {
+			if (err) {
 				console.log('we messed something up, sorry.');
 				res.redirect('back');
 			}
