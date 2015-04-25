@@ -5,8 +5,20 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
+var passport = require('passport');
+
+var nodemailer = require('nodemailer');
+var transporter = require('./config/nodemailer')(nodemailer);
+var session = require('express-session');
+var flash = require('express-flash');
 
 var app = express();
+
+app.use(session({ 
+    secret: 'grandhack15',
+    resave: false,
+    saveUninitialized: false
+}));
 
 // Get configuration params, use for db and passport
 var configDB = require('./config/database.js');
@@ -28,6 +40,11 @@ app.set('views', path.join(__dirname, 'views'));
 //TODO database, config params
 
 // Passport setup TODO
+require('./config/passport')(passport,transporter);
+app.use(passport.initialize());
+app.use(passport.session()); // persistent login sessions
+app.use(flash()); //for flash messages stored in session
+
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(__dirname + '/public/favicon.ico'));
@@ -58,6 +75,7 @@ app.use(function(req, res, next) {
 if (app.get('env') === 'development') {
   app.use(function(err, req, res, next) {
     res.status(err.status || 500);
+    console.log(err);
     res.render('error', {
       message: err.message,
       error: err
