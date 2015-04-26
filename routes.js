@@ -17,11 +17,19 @@ module.exports = function(app, usermodel, schedule, dialogueFn) {
 		});
 	});
 
+
 	// Process signup; passport. 
 	app.post('/signup', passport.authenticate('local-signup', {
 		successRedirect: '/profile',
 		failureRedirect: '/signupfail', 
 		failureFlash: true
+	}));
+
+	// Facebook
+	app.get('/auth/facebook', passport.authenticate('facebook', { scope : 'email' }));
+	app.get('/auth/facebook/callback', passport.authenticate('facebook', {
+		successRedirect : '/profile',
+		failureRedirect : '/'
 	}));
 
 	// Signup fail
