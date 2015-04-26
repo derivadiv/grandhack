@@ -1,0 +1,43 @@
+<!-- testing
+<button onclick="display_kitten()">
+Display a kitten
+</button>
+-->
+
+<!-- modal kitten -->
+<div class="modal fade" id="myModalKitten" tabindex="-1" role="dialog" aria-labelledby="myModalLabel-kitten" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel-kitten">Congratulations.  As a reward, you get a kitten.</h4>
+      </div>
+      <div class="modal-body" style="text-align:center">
+
+      <!-- kitten info -->
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>        
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+	</div>
+</div>
+</div>
+
+<Script>
+
+function display_kitten()
+{
+		$("#myModalKitten .modal-body").html( "<img src='http://thecatapi.com/api/images/get?format=src&type=gif'>")
+
+	$("#myModalKitten").modal()
+	
+}
+
+</Script>
