@@ -24,9 +24,10 @@
 				if (user.events[e].dateEnd === undefined){
 			%>
 				<tr>
-					<td><%=user.events[e].title%></td> 	
+					<td><a class="details" event=user.events[e] href="#">
+					<%=user.events[e].title%>
+					</a></td> 	
 					<td><%=user.events[e].dateAdded%></td>
-					<td><a class="details" event=<%=user.events[e]%> href="#">Details</a></td>
 				</tr>
 		<% 		}
 			}

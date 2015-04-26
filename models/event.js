@@ -8,7 +8,11 @@ var eventSchema = mongoose.Schema({
     comments: String,
     dateStart: {type: Date, default: Date.now},
     dateEnd: Date,
-    scheduledReminders: [Date],
+    reminders: {
+        nextReminder: Date,
+        frequency: String,
+        time: String //todo
+    },
     missedReminders: {type: [Date],default: []}
 });
 
