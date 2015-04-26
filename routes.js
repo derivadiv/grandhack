@@ -53,12 +53,16 @@ module.exports = function(app, usermodel) {
     		title: req.body.eventtitle,
     		category: req.body.category,
     		comments: req.body.comments,
+    		dateAdded: new Date(),
     		reminders: {
     			frequency: req.body.reminders,
     			time: req.body.remindtime,
     		}
     	};
     	//TODO reminder handling
+    	newevent.reminders.nextReminder = nextReminder(
+    		newevent.dateAdded, newevent.reminders.frequency, newevent.reminders.time
+    	);
 
     	events.push(newevent);
 
@@ -89,9 +93,18 @@ module.exports = function(app, usermodel) {
 			if (events[e]._id == pastid) {
 				var newevent = {
 		    		title: req.body.eventtitle,
+		    		dateAdded: events[e].dateAdded,
 		    		category: req.body.category,
-		    		comments: req.body.comments
+		    		comments: req.body.comments,
+		    		reminders: {
+		    			frequency: req.body.reminders,
+    					time: req.body.remindtime,
+		    		}
 		    	};
+		    	newevent.reminders.nextReminder = nextReminder(
+		    		events[e].dateAdded, newevent.reminders.frequency, newevent.reminders.time
+    			);
+
 		    	// TODO reminder schedule handling
 		    	events[e] = newevent;
 		    	usermodel.update({
@@ -116,16 +129,15 @@ module.exports = function(app, usermodel) {
 
 	});
 
-	// Delete event (only if logged in)
+	// Delete/ complete event (only if logged in)
 	app.post('/completeevent', isLoggedIn, function(req, res){
 		var events = req.user.events;
 
 		pastid = req.body.eventid;
 		for (var e in events) {
 			if (events[e]._id == pastid) {
-				var newevent = events[e];
-		    	// TODO reminder schedule handling
-		    	events[e] = newevent;
+				events[e].dateEnd = new Date();
+
 		    	usermodel.update({
 					"_id": req.user._id
 				}, {
@@ -142,6 +154,7 @@ module.exports = function(app, usermodel) {
 						});
 					}
 				});
+				return;
 			}
 		}
 		// if we get here, we failed :(
@@ -161,6 +174,42 @@ function isLoggedIn(req, res, next){
 
 
 // calculate next reminder info
-function nextReminder(){
+function nextReminder(startDate, freq, timestr){
+	var now = new Date();
 
+	var a = timestr.split(':');
+	var s = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate(),
+	 parseInt(a[0]),parseInt(a[1]),0,0);
+	if (s>=now){
+		var x = 1;
+		if (freq == '2days'){
+			x = 2;
+		} 
+		else if (freq == 'week') {
+			x = 7;
+		}
+		return new Date(s.getFullYear(), s.getMonth(), s.getDate()+x,
+	 parseInt(a[0]),parseInt(a[1]),0,0);
+	}
+
+	if (freq == 'day') {
+		while (s<now) {
+			s.setDate(s.getDate() + 1);
+		}
+		return new Date(s.getFullYear(), s.getMonth(), s.getDate()+1,
+	 parseInt(a[0]),parseInt(a[1]),0,0);
+	} else if (freq == '2days') {
+		while (s<now) {
+			s.setDate(s.getDate() + 2);
+		}
+		return new Date(s.getFullYear(), s.getMonth(), s.getDate()+2,
+	 parseInt(a[0]),parseInt(a[1]),0,0);
+	} else if (freq == 'week') {
+		while (s<now) {
+			s.setDate(s.getDate() + 7);
+		}
+		return new Date(s.getFullYear(), s.getMonth(), s.getDate()+7,
+	 parseInt(a[0]),parseInt(a[1]),0,0);
+	}
+	return;
 }
