@@ -14,7 +14,7 @@ var eventSchema = mongoose.Schema({
         frequency: String,
         time: String //todo
     },
-    missedReminders: {type: [Date],default: []},
+    missedReminders: {type: [Date], default: []},
     progress: Number
 });
 

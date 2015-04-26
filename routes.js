@@ -76,7 +76,8 @@ module.exports = function(app, usermodel, schedule) {
 	    	newevent.reminders.nextReminder = nextReminder(
 	    		newevent.dateAdded, defaultfreq, defaulttime
 	    	);
-	    	newevent.reminders.nextReminderObject = emailOnDate(schedule, newevent.reminders.nextReminder, email, goaltext);
+
+	    	newevent.reminders.nextReminderObject = emailOnDate(schedule, newevent.reminders.nextReminder, email, newevent.title);
 
 	    	events.push(newevent);
 	    	usermodel.update({
