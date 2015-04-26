@@ -233,6 +233,37 @@ module.exports = function(app, usermodel, schedule, dialogueFn) {
 	});
 
 
+	// Update loved / nurse contacts
+	app.post('/updatecontacts', isLoggedIn, function(req, res){
+		var user = req.user;
+		var nurse = user.lovedonemail; 
+		if (req.body.nurse) {
+			nurse = req.body.nurse;
+		}
+		var loved = user.lovedonemail; 
+		if (req.body.loved) {
+			loved = req.body.loved;
+		}
+
+		usermodel.update({
+			"_id": req.user._id
+		}, {
+			lovedonemail: loved,
+    		nursemail: nurse
+		},{}, function(err, numAffected) {
+			if (err) {
+				console.log('we messed something up, sorry.');
+				res.redirect('back');
+			}
+			else{
+				console.log('something worked. yay?')
+				res.redirect('/profile')
+			}
+		});
+
+	});
+
+
 	app.get('/voice', function(req, res) {
 		res.render('../voice.html');//a little hacky
 	});
