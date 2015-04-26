@@ -176,8 +176,9 @@ $(':checkbox').click(function() {
 		type: 'POST',
 		url: '/checkevent',
 		data: {
-			eventid: this.id,
+			eventid: this.id
 		}
+	});
 	try_to_display_reward();
 });
 
