@@ -58,8 +58,13 @@ app.use('/models',express.static(__dirname+'/models'));
 var eventmodel = require('./models/event.js').model;
 var usermodel = require('./models/user.js');
 
+
+// Scheduler
+var schedule = require('node-schedule');
+
 // Routes
-require('./routes.js')(app, usermodel);
+require('./routes.js')(app, usermodel, schedule);
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

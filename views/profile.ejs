@@ -32,6 +32,8 @@
 </div>
 </form>
 
+
+
 <div class="container-fluid">
 <div class="row">
 <div class="col-sm-2 right-panel">
@@ -51,18 +53,20 @@
 	<% if (user.events.length > 0) { %>
 		<table class="table table-hover"> 
 			<thead> <tr> 
-				<th> Title </th> <th> Date </th> <th> Details </th>	
+				<th> Goal List </th> <th> Status </th> 
 			</tr> </thead>
 			<tbody>
 			<% for (var e in user.events){ 
-				if (user.events[e].title){	%>
+				if (user.events[e].title){	
+					if (user.events[e].dateEnd === undefined){
+					%>
 				<tr>
-					<td><a class="details" event=user.events[e] href="#">
+					<td><a class="details" onclick="'"><% // TODO include updateevent %>
 					<%=user.events[e].title%>
-					</a></td> 	
-					<td><%=user.events[e].dateAdded%></td>
+					</a></td> 
 				</tr>
-			<% }
+			<% 		}
+				}
 			} %>
 			</tbody>
 		</table>

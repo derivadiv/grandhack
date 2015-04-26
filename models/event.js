@@ -10,6 +10,7 @@ var eventSchema = mongoose.Schema({
     dateEnd: Date,
     reminders: {
         nextReminder: Date,
+        nextReminderObject: mongoose.Schema.Types.Mixed,
         frequency: String,
         time: String //todo
     },

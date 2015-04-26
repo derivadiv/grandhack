@@ -1,35 +1,50 @@
-<h3>Details:</h3>
-<form action="/editevent" method="post">
-	<input type="hidden" id="eventid" value=<%=event._id%>>
-	<label>Goal title:
-		<input type="text" id="eventtitle" name="eventtitle" class="form-control" value=<%=event.title%>>
-	</label>
-	<label>Category:
-		<input type="text" id="category" name="category" class="form-control" value=<%=event.category%>>
-	</label>
-	<label>Remind me:
-		<select id="reminders" name="reminders">
-			<option value="day">Every Day</option>
-			<option value="2days">Every Other Day</option>
-			<option value="week">Every Week</option>
-		</select>
-	</label>
-	<label> at time
-		<input type="text" id="remindtime" name="remindtime" value=<%=event.reminders.time%> class="form-control">
-	</label>
-	<% if (event.scheduledReminders.length > 0) { %>
-		(next scheduled reminder: <%=event.scheduledReminders[0]%>)
-	<%} else { %>
-		(no reminders set)
-	<%}%>
-	<label>Comments:
-		<input type="text" id="comments" name="comments" class="form-control" value=<%=event.comments%>>
-	</label>
+<html>
 
-	<input type="submit" value="Save event">
-</form>
+<div class="modal fade" id="updateModal" tabindex="-1" role="dialog" aria-labelledby="updateModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="updateModalLabel">Modal title</h4>
+      </div>
+      <div class="modal-body">
+			<form action="/editevent" method="post" class="our_form">
+				<input type="hidden" id="eventid" value=<%=event._id%>>
+				<div class="input-group">
+				  <span class="input-group-addon" id="basic-addon1">Goal</span>
+				  <input type="text" id="eventtitle" name="eventtitle" class="form-control" placeholder="ex. Monitor blood sugar" aria-describedby="basic-addon1">
+				</div>
 
-<form action="/completeevent" method="post">
-	<input type="hidden" id="eventid" value=<%=event._id%>>
-	<input type="submit" value="Complete event">
-</form>
+				<div class="input-group">
+				  <span class="input-group-addon" id="basic-addon1">Reason</span>
+				  <input type="text" id="category" name="category" class="form-control" placeholder="ex. Monitor blood sugar" aria-describedby="basic-addon1">
+				</div>
+
+				<div class="input-group">
+				  <span class="input-group-addon" id="basic-addon1">Remind me</span>
+					<select id="reminders" name="reminders" class="form-control">
+						<option value="day">Every Day</option>
+						<option value="2days">Every Other Day</option>
+						<option value="week">Every Week</option>
+					</select>
+				</div>
+
+				<div class="input-group">
+				  <span class="input-group-addon" id="basic-addon1">At</span>
+				  <input type="text" id="remindtime" name="remindtime" class="form-control" placeholder="HH:MM" aria-describedby="basic-addon1">
+				</div>
+
+			</form>
+			
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <input class="btn btn-primary" type="submit" value="Save event">
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+
+</html>

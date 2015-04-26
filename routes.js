@@ -1,4 +1,4 @@
-module.exports = function(app, usermodel) {
+module.exports = function(app, usermodel, schedule) {
 	passport = require('passport');
 	app.get('/', function(req, res) {
 		res.render('index.ejs');
@@ -63,6 +63,7 @@ module.exports = function(app, usermodel) {
     	newevent.reminders.nextReminder = nextReminder(
     		newevent.dateAdded, newevent.reminders.frequency, newevent.reminders.time
     	);
+    	newevent.reminders.nextReminderObject = emailOnDate();
 
     	events.push(newevent);
 
@@ -104,8 +105,14 @@ module.exports = function(app, usermodel) {
 		    	newevent.reminders.nextReminder = nextReminder(
 		    		events[e].dateAdded, newevent.reminders.frequency, newevent.reminders.time
     			);
+    			events[e].nextReminderObject.cancel();
+    			console.log(schedule);
+	
+				newevent.reminders.nextReminderObject = emailOnDate(
+					schedule, newevent.reminders.nextReminder, 
+					user.local.email, newevent.title
+				);
 
-		    	// TODO reminder schedule handling
 		    	events[e] = newevent;
 		    	usermodel.update({
 					"_id": req.user._id
@@ -137,7 +144,7 @@ module.exports = function(app, usermodel) {
 		for (var e in events) {
 			if (events[e]._id == pastid) {
 				events[e].dateEnd = new Date();
-
+				events[e].nextReminderObject.cancel();
 		    	usermodel.update({
 					"_id": req.user._id
 				}, {
@@ -212,4 +219,24 @@ function nextReminder(startDate, freq, timestr){
 	 parseInt(a[0]),parseInt(a[1]),0,0);
 	}
 	return;
+}
+
+// job to send reminder email
+function emailOnDate(schedule, date, email, goaltext){
+	console.log(schedule);
+	
+	// return schedule.scheduleJob(date, function(){
+	// 	// email user reminder for now?
+	// 	var mailOptions = {
+	// 		from: 'oper8or.contact@gmail.com',
+	// 		to: email,
+	// 		subject: 'Goal reminder',
+	// 		text: goaltext
+	// 	};
+	// 	// sending the message
+	// 	transporter.sendMail(mailOptions, function(err) {
+	// 		//req.flash('info', 'An email was sent to '+ user.email + ' with further instructions.');
+	// 		done(err, 'done');
+	// 	});
+	// });
 }
