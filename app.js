@@ -58,12 +58,17 @@ app.use('/models',express.static(__dirname+'/models'));
 var eventmodel = require('./models/event.js').model;
 var usermodel = require('./models/user.js');
 
+app.engine('.html', require('ejs').renderFile);
+app.use('voice.html',express.static(__dirname+'/voice.html'));
+app.use('/voice',express.static(__dirname+'/voice'));
+
 
 // Scheduler
 var schedule = require('node-schedule');
+var dialogueFn;
 
 // Routes
-require('./routes.js')(app, usermodel, schedule);
+require('./routes.js')(app, usermodel, schedule, dialogueFn);
 
 
 // catch 404 and forward to error handler

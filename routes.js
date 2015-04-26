@@ -1,4 +1,4 @@
-module.exports = function(app, usermodel, schedule) {
+module.exports = function(app, usermodel, schedule, dialogueFn) {
 	passport = require('passport');
 	app.get('/', function(req, res) {
 		res.render('index.ejs');
@@ -149,6 +149,7 @@ module.exports = function(app, usermodel, schedule) {
 							}
 						);
 						if (today & today.length > 0) {
+							console.log(today);
 							// assume if it exists that we complied and want to undo that
 							today.has_complied = false; //TODO more
 						} else {
@@ -223,6 +224,55 @@ module.exports = function(app, usermodel, schedule) {
 
 	});
 
+
+	app.get('/voice', function(req, res) {
+		res.render('../voice.html');//a little hacky
+	});
+
+	// test: voice stuff?
+	app.get('/talkgoals', isLoggedIn, function(req, res) {
+		var username = "Janet";
+		if (req.user.local.name) {
+			username = req.user.local.name;
+		} else if (req.user.facebook.name){
+			username = req.user.facebook.name
+		}
+		var events = req.user.events;
+		var responses = dialogueFn(username, events);
+		for (var r in responses){
+			if (r<responses.length & r<events.length){
+				// complied, check off for today
+				if (r==1){
+					events[r].compliance_history.push({
+						date_event: new Date(),
+						has_complied: true
+					})
+				} else{ //not complied- todo more work
+					events[r].compliance_history.push({
+						date_event: new Date(),
+						has_complied: false
+					})
+				}
+			}
+		}
+		usermodel.update({
+				"_id": req.user._id
+			}, {
+				"events": events
+			},{}, function(err, numAffected) {
+				if (err) {
+					console.log('we messed something up, sorry.');
+					res.redirect('back');
+				}
+				else{
+					console.log('something worked. yay?')
+					res.render('profile.ejs', {
+						user: req.user 
+					});
+				}
+			});
+			return;
+		});
 
 }
 

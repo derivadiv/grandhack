@@ -2243,3 +2243,54 @@ var wsr = new webkitSpeechRecognition();
 	
 	    return fullpage;
 }));
+
+
+function customDialogue(username, eventList){
+    var wsr = new webkitSpeechRecognition();
+    wsr.start();
+
+    deflang = "en.UK";
+    defpitch = 1.4;
+    defrate = 1.4; 
+    
+    var msg = new SpeechSynthesisUtterance();
+    msg.text = "Hi "+username+", how're you doing today?";
+    msg.lang = deflang;
+    msg.pitch = defpitch;
+    msg.rate = defrate;
+
+    var responses = [];
+
+    for (var e in eventList){
+        var goalname = e.title;
+        var prevMood = "OK. ";
+        if (goalname) {
+            var wsr0 = new webkitSpeechRecognition();
+            msg.onend = function(e) {
+              wsr0.start();
+            };
+
+            msg = new SpeechSynthesisUtterance();
+            msg.text = prevMood + "How have you been doing with goal "+e.toString()+": "+goalname+"?";
+            msg.lang = deflang;
+            msg.pitch = defpitch;
+            msg.rate = defrate;
+            wsr0.onend = function(e) {
+                window.speechSynthesis.speak(msg); 
+            }
+            // right now assume answers are yes, todo process response
+            responses.push(1);
+            prevMood = "Great!";
+         }
+
+    }
+
+    if (a.reduce(function(a,b) {return a+b;} ) == a.length){
+        msg.onend = function(e) {
+            appledropper();
+        }        
+    }
+    return responses;
+}
+
+module.exports = customDialogue;
