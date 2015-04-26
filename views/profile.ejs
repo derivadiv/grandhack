@@ -110,7 +110,11 @@
 					if (today.length > 0 & !today.has_complied){
 						%> <input type="checkbox" id="<%=user.events[e]._id%>" checked> <%
 					} else {
+<<<<<<< HEAD
 						%> <input type="checkbox" id="<%=user.events[e]._id%>"> <%
+=======
+						%> <input class="today_checkbox" type="checkbox" onclick="comply(<%=user.events[e]._id%>)"> <%
+>>>>>>> af41540da8d393a04ada6974817889d3a4a3b9d6
 					}
 
 					%>
@@ -154,16 +158,17 @@ $('#myModal').on('show.bs.modal', function (event) {
 // 1.  loaded from email after the user checked off the last item or
 // 2.  user checks off the last item via web interface
 
+
 function need_to_display_reward()
 {
-	return false;
+	return $(".today_checkbox").length - $(".today_checkbox:checked").length == 0;
 }
 
-$(function() {
-
+function try_to_display_reward()
+{
 	if( need_to_display_reward() )
 		display_kitten();
-});
+}
 
 $(':checkbox').click(function() {
     // $this will contain a reference to the checkbox
@@ -173,7 +178,7 @@ $(':checkbox').click(function() {
 		data: {
 			eventid: this.id,
 		}
-	});
+	try_to_display_reward();
 });
 
 </script>
