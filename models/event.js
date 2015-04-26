@@ -8,6 +8,11 @@ var eventSchema = mongoose.Schema({
     comments: String,
     dateStart: {type: Date, default: Date.now},
     dateEnd: Date,
+    compliance_history: [{
+        date_event: Date,
+        has_complied: Boolean
+    }],
+    last_reward_date: Date,
     reminders: {
         nextReminder: Date,
         nextReminderObject: mongoose.Schema.Types.Mixed,
