@@ -99,24 +99,19 @@
 						}
 					);
 					if (yesterday.length > 0 & yesterday.has_complied){
-						%> <input type="checkbox" disabled readonly checked> <%
+						%> <input class="yesterday_checkbox" type="checkbox" disabled readonly checked> <%
 					} else {
-						%> <input type="checkbox" disabled readonly> <%
+						%> <input class="yesterday_checkbox" type="checkbox" disabled readonly> <%
 					}
 					%>
 					</td>
 					<td>
 					<%
 					if (today.length > 0 & !today.has_complied){
-						%> <input type="checkbox" id="<%=user.events[e]._id%>" checked> <%
+						%> <input class="today_checkbox" type="checkbox" id="<%=user.events[e]._id%>" checked> <%
 					} else {
-<<<<<<< HEAD
-						%> <input type="checkbox" id="<%=user.events[e]._id%>"> <%
-=======
-						%> <input class="today_checkbox" type="checkbox" onclick="comply(<%=user.events[e]._id%>)"> <%
->>>>>>> af41540da8d393a04ada6974817889d3a4a3b9d6
+						%> <input class="today_checkbox" type="checkbox" id="<%=user.events[e]._id%>"><%
 					}
-
 					%>
 					</td>
 				</tr>
