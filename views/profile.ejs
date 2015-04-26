@@ -98,7 +98,7 @@
 							return hist.date_event >= c;
 						}
 					);
-					if (yesterday & yesterday.has_complied){
+					if (yesterday.length > 0 & yesterday.has_complied){
 						%> <input type="checkbox" disabled readonly checked> <%
 					} else {
 						%> <input type="checkbox" disabled readonly> <%
@@ -107,10 +107,10 @@
 					</td>
 					<td>
 					<%
-					if (today & !today.has_complied){
-						%> <input type="checkbox" onclick="comply(<%=user.events[e]._id%>)" checked> <%
+					if (today.length > 0 & !today.has_complied){
+						%> <input type="checkbox" id="<%=user.events[e]._id%>" checked> <%
 					} else {
-						%> <input type="checkbox" onclick="comply(<%=user.events[e]._id%>)"> <%
+						%> <input type="checkbox" id="<%=user.events[e]._id%>"> <%
 					}
 
 					%>
@@ -165,15 +165,16 @@ $(function() {
 		display_kitten();
 });
 
-function comply(eventid){
+$(':checkbox').click(function() {
+    // $this will contain a reference to the checkbox
 	$.ajax({
 		type: 'POST',
 		url: '/checkevent',
 		data: {
-			id: eventid,
+			eventid: this.id,
 		}
 	});
-}
+});
 
 </script>
 
