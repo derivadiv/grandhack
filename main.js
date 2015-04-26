@@ -2086,6 +2086,83 @@
         setScrollingSpeed: setScrollingSpeed
     };
 
+	
+function appledropper(posx, posy, image) {
+	
+	window.requestAnimationFrame=function(){return window.requestAnimationFrame||window.webkitRequestAnimationFrame||window.mozRequestAnimationFrame||window.msRequestAnimationFrame||window.oRequestAnimationFrame||function(f){window.setTimeout(f,1e3/60)}}();
+
+	var canvas = document.querySelector('canvas');
+	var ctx = canvas.getContext('2d');
+	var W = canvas.width = window.innerWidth;
+	var H = canvas.height = window.innerHeight;
+	
+	// Velocity x
+	var vx = 0;
+	// Velocity y
+	var vy = (Math.random() * -15) - 5;
+	
+	var gravity = 0.5;
+	
+	function Ball() {
+		this.radius = 50;
+		this.x = canvas.width / 2 + posx;
+		this.y = canvas.height - 6*this.radius +posy;
+		
+		this.draw = function(ctx) {
+			ctx.fillStyle = 'black';
+			ctx.beginPath();
+			
+			ctx.arc(
+				this.x,
+				this.y,
+				this.radius,
+				0,
+				Math.PI*2,
+				false
+			);
+			
+			ctx.closePath();
+			ctx.fill();
+		}
+	}
+	
+	var ball = new Ball();
+	
+	(function renderFrame() {
+		requestAnimationFrame(renderFrame);
+		ctx.clearRect(0, 0, W, H);
+		
+		vy += gravity;
+		
+		ball.x += vx;
+		ball.y += vy;
+		
+		if (
+				ball.x + ball.radius > canvas.width ||
+				ball.x - ball.radius < 0 ||
+				ball.y + ball.radius > canvas.height// ||
+				//ball.y - ball.radius  < 0
+			 ) {
+			
+			// Re-positioning on the base ;)
+			ball.x = canvas.width / 2 + posx;
+			ball.y = canvas.height - ball.radius + posy;
+			
+			// If we do not re-set the velocities
+			// then the ball will stick to bottom :D
+			
+      var bounce_factor = 0.8;
+			// Velocity x
+			vx = 0;
+			// Velocity y
+			vy = (Math.random() * -15) - 5;
+      vy *= -bounce_factor;
+		}
+		
+		ball.draw(ctx);
+	}());
+
+}
 
 
 var wsr = new webkitSpeechRecognition();
@@ -2103,7 +2180,7 @@ var wsr = new webkitSpeechRecognition();
 		msg0.pitch = 1.4;
 		msg0.rate = 1.4;
 	var msg1 = new SpeechSynthesisUtterance();
-		msg1.text = "Oh, I'm sorry to hear that, Janet. How have you been doing with your medication? Have you taken your medformin today?";
+		msg1.text = "Oh, I'm sorry to hear that, Janet. How have you been doing with your medication? Have you taken your metformin today?";
 		msg1.lang = "en-UK";
 		msg1.pitch = 1.4;
 		msg1.rate = 1.4;
@@ -2122,8 +2199,10 @@ var wsr = new webkitSpeechRecognition();
 		msg4.lang = "en-UK";
 		msg4.pitch = 1.4;
 		msg4.rate = 1.4;
+		var msg5 = new SpeechSynthesisUtterance();
 	
 	wsr.onend = function(e) {
+	appledropper(5, 0, 90);
 		window.speechSynthesis.speak(msg0);
 	}
 	msg0.onend = function(e) {
@@ -2155,7 +2234,12 @@ var wsr = new webkitSpeechRecognition();
 	}
 	wsr4.onend = function(e) {
 		moveSlideRight();
+		window.speechSynthesis.speak(msg5);
 	}
+	msg5.onend = function(e) {
+		appledropper();
+	}
+	
 	
 	    return fullpage;
 }));

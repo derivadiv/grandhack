@@ -308,3 +308,13 @@ background-position: top left;
 
 	-webkit-animation: animatedBackground 100s linear 5s infinite alternate;
 }
+
+#slide1 { 
+	background-image: url(slide1bg.png);
+	background-size:cover;
+
+}
+
+canvas {
+	display: block;
+}
