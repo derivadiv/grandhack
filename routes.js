@@ -41,99 +41,110 @@ module.exports = function(app, usermodel, schedule) {
 	// Update details (todo)
 	app.get('/updateevent', isLoggedIn, function(req, res){
 		res.render('updateevent.ejs', {
+			user: req.user,
 			event: req.body.event // get the user out of session and pass to template
 		});
 	});
 
-	// Add event (only if logged in)
+	// Add or update event (only if logged in) (index is -1 if adding an event)
 	app.post('/addevent', isLoggedIn, function(req, res){
 		var events = req.user.events;
-
-		var newevent = {
-    		title: req.body.eventtitle,
-    		category: req.body.category,
-    		comments: req.body.comments,
-    		dateAdded: new Date(),
-    		reminders: {
-    			frequency: req.body.reminders,
-    			time: req.body.remindtime,
-    		}
-    	};
-    	//TODO reminder handling
-    	newevent.reminders.nextReminder = nextReminder(
-    		newevent.dateAdded, newevent.reminders.frequency, newevent.reminders.time
-    	);
-    	newevent.reminders.nextReminderObject = emailOnDate();
-
-    	events.push(newevent);
-
-    	usermodel.update({
-			"_id": req.user._id
-		}, {
-			"events": events
-		},{}, function(err, numAffected) {
-			if (err) {
-				console.log('we messed something up, sorry.');
-				res.redirect('back');
-			}
-			else{
-				console.log('something worked. yay?')
-				res.render('profile.ejs', {
-					user: req.user 
-				});
-			}
-		});
-	});
-
-	// Edit event (only if logged in)
-	app.post('/editevent', isLoggedIn, function(req, res){
-		var events = req.user.events;
-
-		pastid = req.body.eventid;
-		for (var e in events) {
-			if (events[e]._id == pastid) {
-				var newevent = {
-		    		title: req.body.eventtitle,
-		    		dateAdded: events[e].dateAdded,
-		    		category: req.body.category,
-		    		comments: req.body.comments,
-		    		reminders: {
-		    			frequency: req.body.reminders,
-    					time: req.body.remindtime,
-		    		}
-		    	};
-		    	newevent.reminders.nextReminder = nextReminder(
-		    		events[e].dateAdded, newevent.reminders.frequency, newevent.reminders.time
-    			);
-    			events[e].nextReminderObject.cancel();
-    			console.log(schedule);
-	
-				newevent.reminders.nextReminderObject = emailOnDate(
-					schedule, newevent.reminders.nextReminder, 
-					user.local.email, newevent.title
-				);
-
-		    	events[e] = newevent;
-		    	usermodel.update({
-					"_id": req.user._id
-				}, {
-					"events": events
-				},{}, function(err, numAffected) {
-					if (err) {
-						console.log('we messed something up, sorry.');
-						res.redirect('back');
-					}
-					else{
-						console.log('something worked. yay?')
-						res.render('profile.ejs', {
-							user: req.user 
-						});
-					}
-				});
-			}
+		var pastid = req.body['goal-id'];
+		var defaultfreq = 'day';
+		var defaulttime = '9:00';
+		var email;
+		if (req.user.local){
+			email = req.user.local.email;
 		}
-		// if we get here, we failed :(
+		else { //assume fb?
+			email = req.user.facebook.email;
+		}
 
+		if (pastid == -1){
+			var defaultDate = new Date();
+			// Adding a brand new event, assume daily reminders at 9AM
+			var newevent = {
+	    		title: req.body.eventtitle,
+	    		category: req.body.category,
+	    		dateAdded: defaultDate,
+	    		reminders: {
+	    			frequency: defaultfreq,
+	    			time: defaulttime
+	    		}
+	    	};
+	    	// TODO reminder handling
+	    	newevent.reminders.nextReminder = nextReminder(
+	    		newevent.dateAdded, defaultfreq, defaulttime
+	    	);
+	    	newevent.reminders.nextReminderObject = emailOnDate(schedule, newevent.reminders.nextReminder, email, goaltext);
+
+	    	events.push(newevent);
+	    	usermodel.update({
+				"_id": req.user._id
+			}, {
+				"events": events
+			},{}, function(err, numAffected) {
+				if (err) {
+					console.log('we messed something up, sorry.');
+					res.redirect('back');
+				}
+				else{
+					console.log('something worked. yay?')
+					res.render('profile.ejs', {
+						user: req.user 
+					});
+				}
+			});
+		} else {
+			// try to update existing event with this id
+			for (var e in events) {
+				if (events[e]._id == pastid) {
+					var newevent = {
+			    		title: req.body.eventtitle,
+			    		dateAdded: events[e].dateAdded,
+			    		category: req.body.category,
+			    		comments: events[e].comments,
+			    		reminders: events[e].reminders
+			    	};
+			    	if (newevent.reminders.frequency === undefined | newevent.reminders.time === undefined) {
+			    		newevent.reminders.frequency = defaultfreq;
+			    		newevent.reminders.time = defaulttime;
+			    	}
+
+				  	newevent.reminders.nextReminder = nextReminder(
+			    		events[e].dateAdded, newevent.reminders.frequency, newevent.reminders.time
+	    			);
+	    			console.log(schedule);
+			    	newevent.reminders.nextReminderObject = emailOnDate(
+						schedule, newevent.reminders.nextReminder, 
+						email, newevent.title
+					);
+					if (events[e].nextReminderObject) {
+		    			events[e].nextReminderObject.cancel();
+					}
+		
+			    	events[e] = newevent;
+			    	usermodel.update({
+						"_id": req.user._id
+					}, {
+						"events": events
+					},{}, function(err, numAffected) {
+						if (err) {
+							console.log('we messed something up, sorry.');
+							res.redirect('back');
+						}
+						else{
+							console.log('something worked. yay?')
+							res.render('profile.ejs', {
+								user: req.user 
+							});
+						}
+					});
+					return;
+				}
+			}
+			// if here, we failed :(	
+		}
 	});
 
 	// Delete/ complete event (only if logged in)
@@ -239,4 +250,15 @@ function emailOnDate(schedule, date, email, goaltext){
 	// 		done(err, 'done');
 	// 	});
 	// });
+}
+
+// TODO fine-tune this function
+function calcProgress(event){
+	if (event.missedReminders.length == 0) {
+		return 0.9;
+	}
+	if (event.missedReminders.length < 5 ){
+		return 0.3;
+	}
+	return 0.5;
 }
