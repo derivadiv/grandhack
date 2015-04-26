@@ -37,7 +37,7 @@
 </form>
 
 
-<!-- Event Management -->
+<!-- Contact Mangement -->
 <form action="/updatecontacts" method="post" class="our_form">
 <div class="modal fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2" aria-hidden="true">
   <div class="modal-dialog">
@@ -62,6 +62,16 @@
 </form>
 
 
+	<% 
+	var lovedemail = "No email entered";
+	var nursemail = "No email entered";
+	if (user.lovedonemail) {
+		lovedemail = user.lovedonemail;
+	}
+	if (user.nursemail) {
+		nursemail = user.nursemail;
+	}
+	%> 
 
 
 <div class="container-fluid">
@@ -75,6 +85,16 @@
 		>
 		  New Goal
 		</button>
+
+
+	<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal2"
+						data-loved="<%=lovedemail%>"
+						data-nurse="<%=nursemail%>"
+						
+>
+  	Edit Contacts
+	</button>
+
 	</div>
 </div>
 <div class="row">
@@ -89,26 +109,6 @@
 	%>
 
 	<h2> Welcome <%=username%> </h2>
-	<h4> Contacts</h4>
-	<% 
-	var lovedemail = "No email entered";
-	var nursemail = "No email entered";
-	if (user.lovedonemail) {
-		lovedemail = user.lovedonemail;
-	}
-	if (user.nursemail) {
-		nursemail = user.nursemail;
-	}
-	%> 
-	<p> Loved one: <%=lovedemail%></p>
-	<p> Nurse: <%=nursemail%></p>
-	<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal2"
-						data-goal=""
-						data-goal-id="-1"
-						data-category=""
->
-  	Edit Contacts
-	</button>
 
 <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal"
 						data-goal=""
@@ -117,6 +117,20 @@
 >
   New Goal
 </button>
+<br/>
+<br/>
+<br/>
+	<h4> Contacts</h4>
+	<p> <i>Loved one:</i><br/> <%=lovedemail%></p>
+	<p> <i>Nurse:</i><br/> <%=nursemail%></p>
+	<br/>
+	<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal2" 
+						data-loved="<%=lovedemail%>"
+						data-nurse="<%=nursemail%>"
+>
+  	Edit
+	</button>
+
 
 </div>
 <div class="col-sm-10 right-panel">
@@ -209,6 +223,19 @@ $('#myModal').on('show.bs.modal', function (event) {
 
 })
 
+$('#myModal2').on('show.bs.modal', function (event) {
+  var button = $(event.relatedTarget) // Button that triggered the modal
+  var nurse = button.data('nurse') // Extract info from data-* attributes
+  var loved = button.data('loved') // Extract info from data-* attributes
+  // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+  // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+  var modal = $(this)
+  modal.find('#nurse').val( nurse )
+  modal.find('#loved').val( loved )
+
+
+
+})
 
 // Do we need to display reward?  Sohuld return true if the user just complied with everything
 // May be true when 
