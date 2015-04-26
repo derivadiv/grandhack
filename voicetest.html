@@ -7,9 +7,10 @@
   </head>
   <body>
     
-    
  
     <script>
+	var wsr = new webkitSpeechRecognition();
+	wsr.start();
 	var wsr0 = new webkitSpeechRecognition();
 	var wsr1 = new webkitSpeechRecognition();
 	var wsr2 = new webkitSpeechRecognition();
@@ -43,10 +44,11 @@
 		msg4.pitch = 1.4;
 		msg4.rate = 1.4;
 	
-    window.speechSynthesis.speak(msg0);
-
+	wsr.onend = function(e) {
+		window.speechSynthesis.speak(msg0);
+	}
 	msg0.onend = function(e) {
-	  wsr0.start();
+		wsr0.start();
 	};
 	wsr0.onend = function(e) {
 		window.speechSynthesis.speak(msg1);	
