@@ -62,23 +62,6 @@
 </form>
 
 
-<%
-var username = 'Undefined User';
-if (user.local.name) { 
-	username = user.local.name;
-} else if (user.facebook.name) {
-	username = user.facebook.name;
-}
-console.log(username);
-%>
-
-
-<div class="container-fluid">
-<div class="row">
-<div class="col-sm-2 right-panel">
-	
-	<h2> Welcome <%=username%> </h2>
-	<h4> Contacts</h4>
 	<% 
 	var lovedemail = "No email entered";
 	var nursemail = "No email entered";
@@ -215,20 +198,13 @@ console.log(username);
 	<%
 	} else { %>
 		No events yet! Add a new event below.
-	<% } 
-	var events = [];
-	for (var e in user.events){
-		if (e<user.events.length){
-			events.push(user.events[e].title);
-		}
-	}
-	%>
+	<%} %>
 
 
 
 
 <% include kitten %>
-<input id="secretvoice" type="button" onclick="customDialogue('<%=username%>','<%=JSON.stringify(events)%>'');"/>
+<input id="secretvoice" type="button"/>
 
 <Script>
 
@@ -297,7 +273,6 @@ $(function(){
 });
 
 function customDialogue(username, eventList){
-	eventList = JSON.parse(eventList);
     var wsr = new webkitSpeechRecognition();
     wsr.start();
 
@@ -314,21 +289,20 @@ function customDialogue(username, eventList){
     var responses = [];
 
     for (var e in eventList){
-        var goalname = eventList[e];
+        var goalname = e.title;
         var prevMood = "OK. ";
         if (goalname) {
-        	console.log(goalname);
+            var wsr0 = new webkitSpeechRecognition();
             msg.onend = function(e) {
-              wsr.start();
+              wsr0.start();
             };
-			wsr = new webkitSpeechRecognition();
-            
+
             msg = new SpeechSynthesisUtterance();
             msg.text = prevMood + "How have you been doing with goal "+e.toString()+": "+goalname+"?";
             msg.lang = deflang;
             msg.pitch = defpitch;
             msg.rate = defrate;
-            wsr.onend = function(e) {
+            wsr0.onend = function(e) {
                 window.speechSynthesis.speak(msg); 
             }
             // right now assume answers are yes, todo process response
@@ -338,23 +312,27 @@ function customDialogue(username, eventList){
 
     }
 
-    if (responses.length > 0){
-      	if (responses.reduce(function(a,b) {return a+b;} ) == responses.length){
-	        msg.onend = function(e) {
-	            appledropper();
-	        }        
-    	}
+    if (a.reduce(function(a,b) {return a+b;} ) == a.length){
+        msg.onend = function(e) {
+            appledropper();
+        }        
     }
     return responses;
 }
 
-// $('#secretvoice').click(function() {
-// 	var $this = $(this);
-// 	var username = this.username;
-// 	var events = this.events;
-// 	console.log(this);
-// 	var r = customDialogue(username, events);
-// });
+
+$('#secretvoice').click(function() {
+	var $this = $(this);
+	var user = $this.user;
+	var username = "Janet";
+	if (user.local.name) {
+		username = user.local.name;
+	} else if (user.facebook.name){
+		username = user.facebook.name
+	}
+	var events = user.events;
+	var r = customDialogue(username, events);
+});
 
 </script>
 
