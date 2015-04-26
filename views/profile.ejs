@@ -24,7 +24,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <input class="btn btn-primary" type="submit" value="Add event">
+        <input class="btn btn-primary" type="submit" value="Save">
         
       </div>
     </div>
@@ -48,6 +48,15 @@
 	%>
 
 	<h2> Welcome <%=username%> </h2>
+
+<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal"
+						data-goal=""
+						data-goal-id="-1"
+						data-category=""
+>
+  New Event
+</button>
+
 </div>
 <div class="col-sm-10">
 
@@ -83,13 +92,6 @@
 
 
 
-<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal"
-						data-goal=""
-						data-goal-id="-1"
-						data-category=""
->
-  New Event
-</button>
 
 <% include kitten %>
 
@@ -109,6 +111,17 @@ $('#myModal').on('show.bs.modal', function (event) {
 
 
 })
+
+function check_if_complied_today()
+{
+	return false;
+}
+
+$(function() {
+
+	if( check_if_complied_today() )
+		display_kitten();
+});
 
 </script>
 
