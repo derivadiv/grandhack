@@ -38,14 +38,6 @@ module.exports = function(app, usermodel, schedule) {
 		});
 	});
 
-	// Update details (todo)
-	app.get('/updateevent', isLoggedIn, function(req, res){
-		res.render('updateevent.ejs', {
-			user: req.user,
-			event: req.body.event // get the user out of session and pass to template
-		});
-	});
-
 	// Nikita: not sure if this works - need to be able to connect to run query on mongodb
 	app.get('/all_checked', isLoggedIn, function( req, res){
 		var events = req.user.events;
@@ -66,8 +58,6 @@ module.exports = function(app, usermodel, schedule) {
 	app.post('/addevent', isLoggedIn, function(req, res){
 		var events = req.user.events;
 		var pastid = req.body['goal-id'];
-		var defaultfreq = 'day';
-		var defaulttime = '9:00';
 		var email;
 		if (req.user.local){
 			email = req.user.local.email;
@@ -75,24 +65,17 @@ module.exports = function(app, usermodel, schedule) {
 		else { //assume fb?
 			email = req.user.facebook.email;
 		}
-
-		if (pastid == -1){
+		
+		// Adding a brand new event	
+		if (pastid == -1) {
 			var defaultDate = new Date();
-			// Adding a brand new event, assume daily reminders at 9AM
 			var newevent = {
 	    		title: req.body.eventtitle,
 	    		category: req.body.category,
 	    		dateAdded: defaultDate,
-	    		reminders: {
-	    			frequency: defaultfreq,
-	    			time: defaulttime
-	    		}
+	    		compliance_history: []
 	    	};
 	    	// TODO reminder handling
-	    	newevent.reminders.nextReminder = nextReminder(
-	    		newevent.dateAdded, defaultfreq, defaulttime
-	    	);
-	    	newevent.reminders.nextReminderObject = emailOnDate(schedule, newevent.reminders.nextReminder, email, goaltext);
 
 	    	events.push(newevent);
 	    	usermodel.update({
@@ -115,31 +98,12 @@ module.exports = function(app, usermodel, schedule) {
 			// try to update existing event with this id
 			for (var e in events) {
 				if (events[e]._id == pastid) {
-					var newevent = {
-			    		title: req.body.eventtitle,
-			    		dateAdded: events[e].dateAdded,
-			    		category: req.body.category,
-			    		comments: events[e].comments,
-			    		reminders: events[e].reminders
-			    	};
-			    	if (newevent.reminders.frequency === undefined | newevent.reminders.time === undefined) {
-			    		newevent.reminders.frequency = defaultfreq;
-			    		newevent.reminders.time = defaulttime;
-			    	}
-
-				  	newevent.reminders.nextReminder = nextReminder(
-			    		events[e].dateAdded, newevent.reminders.frequency, newevent.reminders.time
-	    			);
-	    			console.log(schedule);
-			    	newevent.reminders.nextReminderObject = emailOnDate(
-						schedule, newevent.reminders.nextReminder, 
-						email, newevent.title
-					);
-					if (events[e].nextReminderObject) {
-		    			events[e].nextReminderObject.cancel();
+					if (req.body.eventtitle){
+						events[e].title = req.body.eventtitle
 					}
-		
-			    	events[e] = newevent;
+					if (req.body.category){
+						events[e].category = req.body.category
+					}
 			    	usermodel.update({
 						"_id": req.user._id
 					}, {
@@ -162,6 +126,58 @@ module.exports = function(app, usermodel, schedule) {
 			// if here, we failed :(	
 		}
 	});
+
+	// Check off event today
+	app.post('/checkevent', isLoggedIn, function(req, res){
+		var events = req.user.events;
+		var pastid = req.body['goal-id'];
+		
+		var c = new Date();
+		c.setHours(0);
+		c.setMinutes(0);
+		c.setSeconds(0);
+		c.setMilliseconds(0);
+
+		// try to update existing event with this id
+		for (var e in events) {
+			if (events[e]._id == pastid) {
+				var today = events[e].compliance_history.filter(
+					function(hist){
+						return hist.date_event >= c;
+					}
+				);
+				if (today) {
+					// assume if it exists that we complied and want to undo that
+					today.has_complied = false; //TODO more
+				} else {
+					// it doesn't exist: patient has now complied today, add it to history 
+					events[e].compliance_history.push({
+						date_event: Date.now(),
+        				has_complied: true
+					});
+				}
+		    	usermodel.update({
+					"_id": req.user._id
+				}, {
+					"events": events
+				},{}, function(err, numAffected) {
+					if (err) {
+						console.log('we messed something up, sorry.');
+						res.redirect('back');
+					}
+					else{
+						console.log('something worked. yay?')
+						res.render('profile.ejs', {
+							user: req.user 
+						});
+					}
+				});
+				return;
+			}
+		}
+		// if here, we failed :(	
+	});
+
 
 	// Delete/ complete event (only if logged in)
 	app.post('/completeevent', isLoggedIn, function(req, res){

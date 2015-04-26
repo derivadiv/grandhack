@@ -63,7 +63,7 @@
 	<% if (user.events.length > 0) { %>
 		<table class="table table-hover"> 
 			<thead> <tr> 
-				<th> Goal List </th> <th> Status </th> 
+				<th> Goal List </th> <th> Yesterday </th> <th> Today </th> 
 			</tr> </thead>
 			<tbody>
 			<% for (var e in user.events){ 
@@ -79,6 +79,42 @@
 						>
 					<%=user.events[e].title%>
 					</a></td> 
+					<td>
+					<%
+					var c = new Date();
+					c.setHours(0);
+					c.setMinutes(0);
+					c.setSeconds(0);
+					c.setMilliseconds(0);
+					var y = new Date(c.getTime());
+					y.setDate(c.getDate()-1)
+					var yesterday = user.events[e].compliance_history.filter(
+						function(hist){
+							return hist.date_event < c & hist.date_event >= y;
+						}
+					);
+					var today = user.events[e].compliance_history.filter(
+						function(hist){
+							return hist.date_event >= c;
+						}
+					);
+					if (yesterday & yesterday.has_complied){
+						%> <input type="checkbox" disabled readonly checked> <%
+					} else {
+						%> <input type="checkbox" disabled readonly> <%
+					}
+					%>
+					</td>
+					<td>
+					<%
+					if (today & !today.has_complied){
+						%> <input type="checkbox" onclick="comply(<%=user.events[e]._id%>)" checked> <%
+					} else {
+						%> <input type="checkbox" onclick="comply(<%=user.events[e]._id%>)"> <%
+					}
+
+					%>
+					</td>
 				</tr>
 			<% 		}
 				}
@@ -128,6 +164,16 @@ $(function() {
 	if( need_to_display_reward() )
 		display_kitten();
 });
+
+function comply(eventid){
+	$.ajax({
+		type: 'POST',
+		url: '/checkevent',
+		data: {
+			id: eventid,
+		}
+	});
+}
 
 </script>
 

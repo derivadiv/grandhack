@@ -12,15 +12,9 @@ var eventSchema = mongoose.Schema({
         date_event: Date,
         has_complied: Boolean
     }],
-    last_reward_date: Date,
-    reminders: {
-        nextReminder: Date,
-        nextReminderObject: mongoose.Schema.Types.Mixed,
-        frequency: String,
-        time: String //todo
-    },
-    missedReminders: {type: [Date],default: []},
-    progress: Number
+    frequency: {type: String, default: 'day'},
+    time: {type: String, default: '23:00'},
+    last_reward_date: Date
 });
 
 
