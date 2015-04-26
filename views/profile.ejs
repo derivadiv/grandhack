@@ -98,7 +98,7 @@
 							return hist.date_event >= c;
 						}
 					);
-					if (yesterday & yesterday.has_complied){
+					if (yesterday.length > 0 & yesterday.has_complied){
 						%> <input class="yesterday_checkbox" type="checkbox" disabled readonly checked> <%
 					} else {
 						%> <input class="yesterday_checkbox" type="checkbox" disabled readonly> <%
@@ -107,12 +107,11 @@
 					</td>
 					<td>
 					<%
-					if (today & !today.has_complied){
-						%> <input class="today_checkbox" type="checkbox" onclick="comply(<%=user.events[e]._id%>)" checked> <%
+					if (today.length > 0 & !today.has_complied){
+						%> <input class="today_checkbox" type="checkbox" id="<%=user.events[e]._id%>" checked> <%
 					} else {
-						%> <input class="today_checkbox" type="checkbox" onclick="comply(<%=user.events[e]._id%>)"> <%
+						%> <input class="today_checkbox" type="checkbox" id="<%=user.events[e]._id%>"><%
 					}
-
 					%>
 					</td>
 				</tr>
@@ -166,16 +165,17 @@ function try_to_display_reward()
 		display_kitten();
 }
 
-function comply(eventid){
+$(':checkbox').click(function() {
+    // $this will contain a reference to the checkbox
 	$.ajax({
 		type: 'POST',
 		url: '/checkevent',
 		data: {
-			id: eventid,
+			eventid: this.id,
 		}
-	});	
+	});
 	try_to_display_reward();
-}
+});
 
 </script>
 

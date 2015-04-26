@@ -130,49 +130,61 @@ module.exports = function(app, usermodel, schedule) {
 	// Check off event today
 	app.post('/checkevent', isLoggedIn, function(req, res){
 		var events = req.user.events;
-		var pastid = req.body['goal-id'];
-		
+		var pastid = req.body.eventid;
 		var c = new Date();
 		c.setHours(0);
 		c.setMinutes(0);
 		c.setSeconds(0);
 		c.setMilliseconds(0);
+		console.log(pastid);
 
 		// try to update existing event with this id
 		for (var e in events) {
-			if (events[e]._id == pastid) {
-				var today = events[e].compliance_history.filter(
-					function(hist){
-						return hist.date_event >= c;
+			if (e < events.length){
+				if (events[e]._id == pastid) {
+					if (events[e].compliance_history){
+						var today = events[e].compliance_history.filter(
+							function(hist){
+								return hist.date_event >= c;
+							}
+						);
+						if (today & today.length > 0) {
+							// assume if it exists that we complied and want to undo that
+							today.has_complied = false; //TODO more
+						} else {
+							// it doesn't exist: patient has now complied today, add it to history 
+							events[e].compliance_history.push({
+								date_event: Date.now(),
+		        				has_complied: true
+							});
+							console.log('made it!');
+
+						}						
 					}
-				);
-				if (today) {
-					// assume if it exists that we complied and want to undo that
-					today.has_complied = false; //TODO more
-				} else {
-					// it doesn't exist: patient has now complied today, add it to history 
-					events[e].compliance_history.push({
-						date_event: Date.now(),
-        				has_complied: true
+					else {
+						events[e].compliance_history = [{
+							date_event: Date.now(),
+							has_complied: true
+						}];
+					}
+			    	usermodel.update({
+						"_id": req.user._id
+					}, {
+						"events": events
+					},{}, function(err, numAffected) {
+						if (err) {
+							console.log('we messed something up, sorry.');
+							res.redirect('back');
+						}
+						else{
+							console.log('something worked. yay?')
+							res.render('profile.ejs', {
+								user: req.user 
+							});
+						}
 					});
-				}
-		    	usermodel.update({
-					"_id": req.user._id
-				}, {
-					"events": events
-				},{}, function(err, numAffected) {
-					if (err) {
-						console.log('we messed something up, sorry.');
-						res.redirect('back');
-					}
-					else{
-						console.log('something worked. yay?')
-						res.render('profile.ejs', {
-							user: req.user 
-						});
-					}
-				});
-				return;
+					return;
+				}				
 			}
 		}
 		// if here, we failed :(	
