@@ -99,16 +99,16 @@
 						}
 					);
 					if (yesterday & yesterday.has_complied){
-						%> <input type="checkbox" disabled readonly checked> <%
+						%> <input class="yesterday_checkbox" type="checkbox" disabled readonly checked> <%
 					} else {
-						%> <input type="checkbox" disabled readonly> <%
+						%> <input class="yesterday_checkbox" type="checkbox" disabled readonly> <%
 					}
 					%>
 					</td>
 					<td>
 					<%
 					if (today & !today.has_complied){
-						%> <input type="checkbox" onclick="comply(<%=user.events[e]._id%>)" checked> <%
+						%> <input class="today_checkbox" type="checkbox" onclick="comply(<%=user.events[e]._id%>)" checked> <%
 					} else {
 						%> <input class="today_checkbox" type="checkbox" onclick="comply(<%=user.events[e]._id%>)"> <%
 					}
