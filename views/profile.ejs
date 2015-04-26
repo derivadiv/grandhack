@@ -2,8 +2,12 @@
 <% include header %>
 
 <style type="text/css">
-	.right-panel { border-right: 1px solid #999; height:100%; background-color:#eee;}
-	.right-panel h2 {color:#ccc;}
+
+	.right-panel {  height:100%;}
+
+	.left-panel {  padding-bottom:20px; background-color: #e1e1e1}
+
+	.left-panel h2 {color:#ccc;}
 	.our_form .input-group {margin-top:5px;}
 </style>
 
@@ -36,8 +40,20 @@
 
 
 <div class="container-fluid">
+<div class="row visible-xs">
+	<div class="col-xs-12 left-panel" style="padding-top:20px; border-bottom: 1px solid #999;">
+
+		<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal"
+								data-goal=""
+								data-goal-id="-1"
+								data-category=""
+		>
+		  New Goal
+		</button>
+	</div>
+</div>
 <div class="row">
-<div class="col-sm-2 right-panel">
+<div class="col-sm-2 left-panel hidden-xs" style="height:100%; border-right: 1px solid #999;">
 	<%
 		var username = 'Undefined User';
 		if (user.local.email) { 
@@ -58,7 +74,7 @@
 </button>
 
 </div>
-<div class="col-sm-10">
+<div class="col-sm-10 right-panel">
 
 	<% if (user.events.length > 0) { %>
 		<table class="table table-hover"> 
