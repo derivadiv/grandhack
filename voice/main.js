@@ -2106,11 +2106,11 @@ function appledropper(posx, posy, image) {
 	function Ball() {
 		this.radius = 50;
 		this.x = canvas.width / 2 + posx;
-		this.y = canvas.height - 6*this.radius +posy;
-		
+		this.y = canvas.height/2 - 6*this.radius + posy;
+		var img = new Image();
+		img.src = "apple.png";
 		this.draw = function(ctx) {
-			ctx.fillStyle = 'black';
-			ctx.beginPath();
+			ctx.drawImage(img, this.x, this.y);
 			
 			ctx.arc(
 				this.x,
@@ -2121,8 +2121,6 @@ function appledropper(posx, posy, image) {
 				false
 			);
 			
-			ctx.closePath();
-			ctx.fill();
 		}
 	}
 	
@@ -2140,13 +2138,13 @@ function appledropper(posx, posy, image) {
 		if (
 				ball.x + ball.radius > canvas.width ||
 				ball.x - ball.radius < 0 ||
-				ball.y + ball.radius > canvas.height// ||
+				ball.y + 5*ball.radius > canvas.height// ||
 				//ball.y - ball.radius  < 0
 			 ) {
 			
 			// Re-positioning on the base ;)
 			ball.x = canvas.width / 2 + posx;
-			ball.y = canvas.height - ball.radius + posy;
+			ball.y = canvas.height - 5*ball.radius;
 			
 			// If we do not re-set the velocities
 			// then the ball will stick to bottom :D
@@ -2185,24 +2183,27 @@ var wsr = new webkitSpeechRecognition();
 		msg1.pitch = 1.4;
 		msg1.rate = 1.4;
 	var msg2 = new SpeechSynthesisUtterance();
-		msg2.text = "How about your glipazide?";
+		msg2.text = "How about your glipizide? Remember you wanted to take your medications more so that you stay healthy for your granddaughter.";
 		msg2.lang = "en-UK";
 		msg2.pitch = 1.4;
 		msg2.rate = 1.4;
 	var msg3 = new SpeechSynthesisUtterance();
-		msg3.text = "What'd you have to eat today?";
+		msg3.text = "Did you have your daily jog?";
 		msg3.lang = "en-UK";
 		msg3.pitch = 1.4;
 		msg3.rate = 1.4;
 	var msg4 = new SpeechSynthesisUtterance();
-		msg4.text = "That sounds yummy. Did you take your daily jog?";
+		msg4.text = "Excellent. I can see you've gone three point four miles.";
 		msg4.lang = "en-UK";
 		msg4.pitch = 1.4;
 		msg4.rate = 1.4;
-		var msg5 = new SpeechSynthesisUtterance();
+	var msg5 = new SpeechSynthesisUtterance();
+		msg4.text = "Congratulations. You've earned an apple!";
+		msg4.lang = "en-UK";
+		msg4.pitch = 1.4;
+		msg4.rate = 1.4;
 	
 	wsr.onend = function(e) {
-	appledropper(5, 0, 90);
 		window.speechSynthesis.speak(msg0);
 	}
 	msg0.onend = function(e) {
@@ -2237,9 +2238,60 @@ var wsr = new webkitSpeechRecognition();
 		window.speechSynthesis.speak(msg5);
 	}
 	msg5.onend = function(e) {
-		appledropper();
+		appledropper(250, 0, 90);
 	}
 	
 	
 	    return fullpage;
 }));
+
+
+function customDialogue(username, eventList){
+    var wsr = new webkitSpeechRecognition();
+    wsr.start();
+
+    deflang = "en.UK";
+    defpitch = 1.4;
+    defrate = 1.4; 
+    
+    var msg = new SpeechSynthesisUtterance();
+    msg.text = "Hi "+username+", how're you doing today?";
+    msg.lang = deflang;
+    msg.pitch = defpitch;
+    msg.rate = defrate;
+
+    var responses = [];
+
+    for (var e in eventList){
+        var goalname = e.title;
+        var prevMood = "OK. ";
+        if (goalname) {
+            var wsr0 = new webkitSpeechRecognition();
+            msg.onend = function(e) {
+              wsr0.start();
+            };
+
+            msg = new SpeechSynthesisUtterance();
+            msg.text = prevMood + "How have you been doing with goal "+e.toString()+": "+goalname+"?";
+            msg.lang = deflang;
+            msg.pitch = defpitch;
+            msg.rate = defrate;
+            wsr0.onend = function(e) {
+                window.speechSynthesis.speak(msg); 
+            }
+            // right now assume answers are yes, todo process response
+            responses.push(1);
+            prevMood = "Great!";
+         }
+
+    }
+
+    if (a.reduce(function(a,b) {return a+b;} ) == a.length){
+        msg.onend = function(e) {
+            appledropper();
+        }        
+    }
+    return responses;
+}
+
+module.exports = customDialogue;

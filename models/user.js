@@ -18,7 +18,9 @@ var userSchema = mongoose.Schema({
     resetPasswordToken: String,
     resetPasswordExpires: Date,
     events: [eventSchema],
-    diseases: [String]
+    diseases: [String],
+    lovedonemail: String,
+    nursemail: String
 });
 
 // generating a hash, salted 8x

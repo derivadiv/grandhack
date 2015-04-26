@@ -37,6 +37,31 @@
 </form>
 
 
+<!-- Event Management -->
+<form action="/updatecontacts" method="post" class="our_form">
+<div class="modal fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel2">Emergency Contacts</h4>
+      </div>
+      <div class="modal-body">
+		<% include edit_contacts %>
+
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <input class="btn btn-primary" type="submit" value="Save">
+        
+      </div>
+    </div>
+  </div>
+</div>
+</form>
+
+
 
 
 <div class="container-fluid">
@@ -64,6 +89,26 @@
 	%>
 
 	<h2> Welcome <%=username%> </h2>
+	<h4> Contacts</h4>
+	<% 
+	var lovedemail = "No email entered";
+	var nursemail = "No email entered";
+	if (user.lovedonemail) {
+		lovedemail = user.lovedonemail;
+	}
+	if (user.nursemail) {
+		nursemail = user.nursemail;
+	}
+	%> 
+	<p> Loved one: <%=lovedemail%></p>
+	<p> Nurse: <%=nursemail%></p>
+	<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal2"
+						data-goal=""
+						data-goal-id="-1"
+						data-category=""
+>
+  	Edit Contacts
+	</button>
 
 <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal"
 						data-goal=""
@@ -145,6 +190,7 @@
 
 
 <% include kitten %>
+<input id="secretvoice" type="button"/>
 
 <Script>
 
@@ -198,6 +244,69 @@ $(function(){
 	$(".yesterday_checkbox:not(:checked)").replaceWith( '<span class="label label-danger">:(</span>' );
 	$(".today_checkbox:checked").replaceWith( '<span class="label label-success">:)</span>' );
 });
+
+function customDialogue(username, eventList){
+    var wsr = new webkitSpeechRecognition();
+    wsr.start();
+
+    deflang = "en.UK";
+    defpitch = 1.4;
+    defrate = 1.4; 
+    
+    var msg = new SpeechSynthesisUtterance();
+    msg.text = "Hi "+username+", how're you doing today?";
+    msg.lang = deflang;
+    msg.pitch = defpitch;
+    msg.rate = defrate;
+
+    var responses = [];
+
+    for (var e in eventList){
+        var goalname = e.title;
+        var prevMood = "OK. ";
+        if (goalname) {
+            var wsr0 = new webkitSpeechRecognition();
+            msg.onend = function(e) {
+              wsr0.start();
+            };
+
+            msg = new SpeechSynthesisUtterance();
+            msg.text = prevMood + "How have you been doing with goal "+e.toString()+": "+goalname+"?";
+            msg.lang = deflang;
+            msg.pitch = defpitch;
+            msg.rate = defrate;
+            wsr0.onend = function(e) {
+                window.speechSynthesis.speak(msg); 
+            }
+            // right now assume answers are yes, todo process response
+            responses.push(1);
+            prevMood = "Great!";
+         }
+
+    }
+
+    if (a.reduce(function(a,b) {return a+b;} ) == a.length){
+        msg.onend = function(e) {
+            appledropper();
+        }        
+    }
+    return responses;
+}
+
+
+$('#secretvoice').click(function() {
+	var $this = $(this);
+	var user = $this.user;
+	var username = "Janet";
+	if (user.local.name) {
+		username = user.local.name;
+	} else if (user.facebook.name){
+		username = user.facebook.name
+	}
+	var events = user.events;
+	var r = customDialogue(username, events);
+});
+
 </script>
 
 <% include ga %>

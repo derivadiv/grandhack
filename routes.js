@@ -1,4 +1,4 @@
-module.exports = function(app, usermodel, schedule) {
+module.exports = function(app, usermodel, schedule, dialogueFn) {
 	passport = require('passport');
 	app.get('/', function(req, res) {
 		res.render('index.ejs');
@@ -17,11 +17,19 @@ module.exports = function(app, usermodel, schedule) {
 		});
 	});
 
+
 	// Process signup; passport. 
 	app.post('/signup', passport.authenticate('local-signup', {
 		successRedirect: '/profile',
 		failureRedirect: '/signupfail', 
 		failureFlash: true
+	}));
+
+	// Facebook
+	app.get('/auth/facebook', passport.authenticate('facebook', { scope : 'email' }));
+	app.get('/auth/facebook/callback', passport.authenticate('facebook', {
+		successRedirect : '/profile',
+		failureRedirect : '/'
 	}));
 
 	// Signup fail
@@ -149,6 +157,7 @@ module.exports = function(app, usermodel, schedule) {
 							}
 						);
 						if (today & today.length > 0) {
+							console.log(today);
 							// assume if it exists that we complied and want to undo that
 							today.has_complied = false; //TODO more
 						} else {
@@ -223,6 +232,86 @@ module.exports = function(app, usermodel, schedule) {
 
 	});
 
+
+	// Update loved / nurse contacts
+	app.post('/updatecontacts', isLoggedIn, function(req, res){
+		var user = req.user;
+		var nurse = user.lovedonemail; 
+		if (req.body.nurse) {
+			nurse = req.body.nurse;
+		}
+		var loved = user.lovedonemail; 
+		if (req.body.loved) {
+			loved = req.body.loved;
+		}
+
+		usermodel.update({
+			"_id": req.user._id
+		}, {
+			lovedonemail: loved,
+    		nursemail: nurse
+		},{}, function(err, numAffected) {
+			if (err) {
+				console.log('we messed something up, sorry.');
+				res.redirect('back');
+			}
+			else{
+				console.log('something worked. yay?')
+				res.redirect('/profile')
+			}
+		});
+
+	});
+
+
+	app.get('/voice', function(req, res) {
+		res.render('../voice.html');//a little hacky
+	});
+
+	// test: voice stuff?
+	app.get('/talkgoals', isLoggedIn, function(req, res) {
+		var username = "Janet";
+		if (req.user.local.name) {
+			username = req.user.local.name;
+		} else if (req.user.facebook.name){
+			username = req.user.facebook.name
+		}
+		var events = req.user.events;
+		var responses = dialogueFn(username, events);
+		for (var r in responses){
+			if (r<responses.length & r<events.length){
+				// complied, check off for today
+				if (r==1){
+					events[r].compliance_history.push({
+						date_event: new Date(),
+						has_complied: true
+					})
+				} else{ //not complied- todo more work
+					events[r].compliance_history.push({
+						date_event: new Date(),
+						has_complied: false
+					})
+				}
+			}
+		}
+		usermodel.update({
+				"_id": req.user._id
+			}, {
+				"events": events
+			},{}, function(err, numAffected) {
+				if (err) {
+					console.log('we messed something up, sorry.');
+					res.redirect('back');
+				}
+				else{
+					console.log('something worked. yay?')
+					res.render('profile.ejs', {
+						user: req.user 
+					});
+				}
+			});
+			return;
+		});
 
 }
 
