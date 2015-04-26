@@ -2,8 +2,12 @@
 <% include header %>
 
 <style type="text/css">
-	.right-panel { border-right: 1px solid #999; height:100%; background-color:#eee;}
-	.right-panel h2 {color:#ccc;}
+
+	.right-panel {  height:100%;}
+
+	.left-panel {  padding-bottom:20px; background-color: #e1e1e1}
+
+	.left-panel h2 {color:#ccc;}
 	.our_form .input-group {margin-top:5px;}
 </style>
 
@@ -15,7 +19,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">Event</h4>
+        <h4 class="modal-title" id="myModalLabel">Goal</h4>
       </div>
       <div class="modal-body">
 		<% include form_event %>
@@ -33,7 +37,7 @@
 </form>
 
 
-<!-- Event Management -->
+<!-- Contact Mangement -->
 <form action="/updatecontacts" method="post" class="our_form">
 <div class="modal fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2" aria-hidden="true">
   <div class="modal-dialog">
@@ -58,6 +62,7 @@
 </form>
 
 
+<<<<<<< HEAD
 <%
 var username = 'Undefined User';
 if (user.local.name) { 
@@ -85,26 +90,68 @@ console.log(username);
 		nursemail = user.nursemail;
 	}
 	%> 
-	<p> Loved one: <%=lovedemail%></p>
-	<p> Nurse: <%=nursemail%></p>
+
+
+<div class="container-fluid">
+<div class="row visible-xs">
+	<div class="col-xs-12 left-panel" style="padding-top:20px; border-bottom: 1px solid #999;">
+
+		<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal"
+								data-goal=""
+								data-goal-id="-1"
+								data-category=""
+		>
+		  New Goal
+		</button>
+
+
 	<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal2"
-						data-goal=""
-						data-goal-id="-1"
-						data-category=""
+						data-loved="<%=lovedemail%>"
+						data-nurse="<%=nursemail%>"
+						
 >
   	Edit Contacts
 	</button>
+
+	</div>
+</div>
+<div class="row">
+<div class="col-sm-2 left-panel hidden-xs" style="height:100%; border-right: 1px solid #999;">
+	<%
+		var username = 'Undefined User';
+		if (user.local.email) { 
+			username = user.local.name;
+		} else if (user.facebook.token) {
+			username = user.facebook.name;
+		}
+	%>
+
+	<h2> Welcome <%=username%> </h2>
 
 <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal"
 						data-goal=""
 						data-goal-id="-1"
 						data-category=""
 >
-  New Event
+  New Goal
 </button>
+<br/>
+<br/>
+<br/>
+	<h4> Contacts</h4>
+	<p> <i>Loved one:</i><br/> <%=lovedemail%></p>
+	<p> <i>Nurse:</i><br/> <%=nursemail%></p>
+	<br/>
+	<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal2" 
+						data-loved="<%=lovedemail%>"
+						data-nurse="<%=nursemail%>"
+>
+  	Edit
+	</button>
+
 
 </div>
-<div class="col-sm-10">
+<div class="col-sm-10 right-panel">
 
 	<% if (user.events.length > 0) { %>
 		<table class="table table-hover"> 
@@ -201,6 +248,19 @@ $('#myModal').on('show.bs.modal', function (event) {
 
 })
 
+$('#myModal2').on('show.bs.modal', function (event) {
+  var button = $(event.relatedTarget) // Button that triggered the modal
+  var nurse = button.data('nurse') // Extract info from data-* attributes
+  var loved = button.data('loved') // Extract info from data-* attributes
+  // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+  // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+  var modal = $(this)
+  modal.find('#nurse').val( nurse )
+  modal.find('#loved').val( loved )
+
+
+
+})
 
 // Do we need to display reward?  Sohuld return true if the user just complied with everything
 // May be true when 
