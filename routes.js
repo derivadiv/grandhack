@@ -52,7 +52,11 @@ module.exports = function(app, usermodel) {
 		var newevent = {
     		title: req.body.eventtitle,
     		category: req.body.category,
-    		comments: req.body.comments
+    		comments: req.body.comments,
+    		reminders: {
+    			frequency: req.body.reminders,
+    			time: req.body.remindtime,
+    		}
     	};
     	//TODO reminder handling
 
@@ -153,4 +157,10 @@ function isLoggedIn(req, res, next){
 		return next();
 	}
 	res.redirect('/');
+}
+
+
+// calculate next reminder info
+function nextReminder(){
+
 }

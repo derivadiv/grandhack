@@ -15,7 +15,7 @@
 		</select>
 	</label>
 	<label> at time
-		<input type="text" id="remindtime" name="remindtime" class="form-control">
+		<input type="text" id="remindtime" name="remindtime" value=<%=event.reminders.time%> class="form-control">
 	</label>
 	<% if (event.scheduledReminders.length > 0) { %>
 		(next scheduled reminder: <%=event.scheduledReminders[0]%>)
