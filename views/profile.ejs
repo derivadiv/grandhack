@@ -7,6 +7,7 @@
 	.our_form .input-group {margin-top:5px;}
 </style>
 
+
 <!-- Event Management -->
 <form action="/addevent" method="post" class="our_form">
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -61,7 +62,16 @@
 					if (user.events[e].dateEnd === undefined){
 					%>
 				<tr>
-					<td><a class="details" onclick="'"><% // TODO include updateevent %>
+
+				<!--
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo">Open modal for @mdo</button>
+				-->
+					<td><a class="details" data-toggle="modal" data-target="#myModal" 
+						data-goal="<%=user.events[e].title%>"
+						data-goal-id="<%=user.events[e]._id%>"
+						data-category="<%=user.events[e].category%>"
+
+						>
 					<%=user.events[e].title%>
 					</a></td> 
 				</tr>
@@ -77,7 +87,11 @@
 
 
 
-<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
+<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal"
+						data-goal=""
+						data-goal-id="-1"
+						data-category=""
+>
   New Event
 </button>
 
@@ -85,5 +99,24 @@
 	</div>
 </div>
 </div>
+
+<Script>
+
+$('#myModal').on('show.bs.modal', function (event) {
+  var button = $(event.relatedTarget) // Button that triggered the modal
+  var goal = button.data('goal') // Extract info from data-* attributes
+  var id = button.data('goal-id') // Extract info from data-* attributes
+  var category = button.data('category') // Extract info from data-* attributes
+  // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+  // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+  var modal = $(this)
+  modal.find('#eventtitle').val( goal )
+  modal.find('#category').val( category )
+  modal.find('#goal-id').val( id )
+
+
+})
+
+</script>
 
 </html>
