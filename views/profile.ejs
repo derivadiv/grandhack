@@ -81,15 +81,24 @@
 					</a></td> 
 					<td>
 					<%
-					var checked = true;
-					var compare = new Date();
-					for (var m in user.events[e].missedReminders){
-						if (m < new Date(compare.getYear(), compare.getMonth(), compare.getDate(), 0,0,0) & m >= new Date(compare.getYear(), compare.getMonth(), compare.getDate()-1, 0,0,0)) {
-							checked = false;
-							break;
+					var c = new Date();
+					c.setHours(0);
+					c.setMinutes(0);
+					c.setSeconds(0);
+					c.setMilliseconds(0);
+					var y = new Date(c.getTime());
+					y.setDate(c.getDate()-1)
+					var yesterday = user.events[e].compliance_history.filter(
+						function(hist){
+							return hist.date_event < c & hist.date_event >= y;
 						}
-					}
-					if (checked){
+					);
+					var today = user.events[e].compliance_history.filter(
+						function(hist){
+							return hist.date_event >= c;
+						}
+					);
+					if (yesterday & yesterday.has_complied){
 						%> <input type="checkbox" disabled readonly checked> <%
 					} else {
 						%> <input type="checkbox" disabled readonly> <%
@@ -98,10 +107,10 @@
 					</td>
 					<td>
 					<%
-					if (user.events[e].reminders.nextReminder){
-						%> <input type="checkbox"> <%
+					if (today & !today.has_complied){
+						%> <input type="checkbox" onclick="comply(<%=user.events[e]._id%>)" checked> <%
 					} else {
-						%> <input type="checkbox" checked> <%
+						%> <input type="checkbox" onclick="comply(<%=user.events[e]._id%>)"> <%
 					}
 
 					%>
@@ -149,6 +158,16 @@ $(function() {
 	if( check_if_complied_today() )
 		display_kitten();
 });
+
+function comply(eventid){
+	$.ajax({
+		type: 'POST',
+		url: '/checkevent',
+		data: {
+			id: eventid,
+		}
+	});
+}
 
 </script>
 
