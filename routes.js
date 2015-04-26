@@ -46,6 +46,22 @@ module.exports = function(app, usermodel, schedule) {
 		});
 	});
 
+	// Nikita: not sure if this works - need to be able to connect to run query on mongodb
+	app.get('/all_checked', isLoggedIn, function( req, res){
+		var events = req.user.events;
+		for( var e in events ){
+
+			if( e ){
+				var today_comp = e.compliance_history.find( {date_event: new Date() } );
+				console.log( today_comp );
+				res.write( "y");
+				return;
+			}
+		}
+		res.write( "n");
+		return;
+	});
+
 	// Add or update event (only if logged in) (index is -1 if adding an event)
 	app.post('/addevent', isLoggedIn, function(req, res){
 		var events = req.user.events;
