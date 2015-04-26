@@ -7,6 +7,31 @@
 	.our_form .input-group {margin-top:5px;}
 </style>
 
+<!-- Event Management -->
+<form action="/addevent" method="post" class="our_form">
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+      </div>
+      <div class="modal-body">
+
+		<% include form_event %>
+
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <input class="btn btn-primary" type="submit" value="Add event">
+        
+      </div>
+    </div>
+  </div>
+</div>
+</form>
+
 <div class="container-fluid">
 <div class="row">
 <div class="col-sm-2 right-panel">
@@ -48,39 +73,10 @@
 
 
 
+<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
+  New Event
+</button>
 
-	<form action="/addevent" method="post" class="our_form">
-
-		<div class="input-group">
-		  <span class="input-group-addon" id="basic-addon1">New Goal</span>
-		  <input type="text" id="eventtitle" name="eventtitle" class="form-control" placeholder="ex. Monitor blood sugar" aria-describedby="basic-addon1">
-
-		</div>
-
-
-		<div class="input-group">
-		  <span class="input-group-addon" id="basic-addon1">Reason</span>
-		  <input type="text" id="category" name="category" class="form-control" placeholder="ex. Monitor blood sugar" aria-describedby="basic-addon1">
-		</div>
-
-		<div class="input-group">
-		  <span class="input-group-addon" id="basic-addon1">Remind me</span>
-			<select id="reminders" name="reminders" class="form-control">
-				<option value="day">Every Day</option>
-				<option value="2days">Every Other Day</option>
-				<option value="week">Every Week</option>
-			</select>
-		</div>
-
-		<div class="input-group">
-		  <span class="input-group-addon" id="basic-addon1">At</span>
-		  <input type="text" id="remindtime" name="remindtime" class="form-control" placeholder="HH:MM" aria-describedby="basic-addon1">
-		</div>
-
-		<div style="text-align:right;margin-top:5px">
-		<input class="btn btn-primary" type="submit" value="Add event">
-		</div>
-	</form>
 
 	</div>
 </div>
