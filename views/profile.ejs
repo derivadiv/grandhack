@@ -174,9 +174,14 @@ $(':checkbox').click(function() {
 			eventid: this.id,
 		}
 	});
+	$(".today_checkbox:checked").replaceWith( '<span class="label label-success">:)</span>' );
 	try_to_display_reward();
 });
 
+$(function(){
+	$(".yesterday_checkbox:not(:checked)").replaceWith( '<span class="label label-danger">:(</span>' );
+	$(".today_checkbox:checked").replaceWith( '<span class="label label-success">:)</span>' );
+});
 </script>
 
 <% include ga %>
