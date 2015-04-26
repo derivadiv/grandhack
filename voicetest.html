@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    
+  </head>
+  <body>
+    
+    
+ 
+    <script>
+	var wsr0 = new webkitSpeechRecognition();
+	var wsr1 = new webkitSpeechRecognition();
+	var wsr2 = new webkitSpeechRecognition();
+	var wsr3 = new webkitSpeechRecognition();
+	var wsr4 = new webkitSpeechRecognition();
+	var wsr5 = new webkitSpeechRecognition();
+	
+	var msg0 = new SpeechSynthesisUtterance();
+		msg0.text = "Hi Janet, how're you doing today?";
+		msg0.lang = "en-UK";
+		msg0.pitch = 1.4;
+		msg0.rate = 1.4;
+	var msg1 = new SpeechSynthesisUtterance();
+		msg1.text = "Oh, I'm sorry to hear that, Janet. How have you been doing with your medication? Have you taken your medformin today?";
+		msg1.lang = "en-UK";
+		msg1.pitch = 1.4;
+		msg1.rate = 1.4;
+	var msg2 = new SpeechSynthesisUtterance();
+		msg2.text = "How about your glipazide?";
+		msg2.lang = "en-UK";
+		msg2.pitch = 1.4;
+		msg2.rate = 1.4;
+	var msg3 = new SpeechSynthesisUtterance();
+		msg3.text = "What'd you have to eat today?";
+		msg3.lang = "en-UK";
+		msg3.pitch = 1.4;
+		msg3.rate = 1.4;
+	var msg4 = new SpeechSynthesisUtterance();
+		msg4.text = "That sounds yummy. Did you take your daily jog?";
+		msg4.lang = "en-UK";
+		msg4.pitch = 1.4;
+		msg4.rate = 1.4;
+	
+    window.speechSynthesis.speak(msg0);
+
+	msg0.onend = function(e) {
+	  wsr0.start();
+	};
+	wsr0.onend = function(e) {
+		window.speechSynthesis.speak(msg1);	
+	}
+	msg1.onend = function(e) {
+	  wsr1.start();
+	};
+	wsr1.onend = function(e) {
+		window.speechSynthesis.speak(msg2);	
+	}
+	msg2.onend = function(e) {
+	  wsr2.start();
+	};
+	wsr2.onend = function(e) {
+		window.speechSynthesis.speak(msg3);	
+	}
+	msg3.onend = function(e) {
+	  wsr3.start();
+	};
+	wsr3.onend = function(e) {
+		window.speechSynthesis.speak(msg4);	
+	}	
+	
+		
+	
+	
+		
+    </script>
+  </body>
+</html>
