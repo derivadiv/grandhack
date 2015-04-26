@@ -4,6 +4,7 @@
 <style type="text/css">
 	.right-panel { border-right: 1px solid #999; height:100%; background-color:#eee;}
 	.right-panel h2 {color:#ccc;}
+	.our_form .input-group {margin-top:5px;}
 </style>
 
 <div class="container-fluid">
@@ -47,7 +48,7 @@
 
 
 
-	<form action="/addevent" method="post">
+	<form action="/addevent" method="post" class="our_form">
 
 		<div class="input-group">
 		  <span class="input-group-addon" id="basic-addon1">New Goal</span>
@@ -56,24 +57,25 @@
 		</div>
 
 
+		<div class="input-group">
+		  <span class="input-group-addon" id="basic-addon1">Reason</span>
+		  <input type="text" id="category" name="category" class="form-control" placeholder="ex. Monitor blood sugar" aria-describedby="basic-addon1">
+		</div>
 
-	<label>Reason:
-		<input type="text" id="category" name="category" class="form-control">
-	</label>
-	<label>Remind me:
-		<select id="reminders" name="reminders">
-			<option value="day">Every Day</option>
-			<option value="2days">Every Other Day</option>
-			<option value="week">Every Week</option>
-		</select>
-	</label>
-	<label> at time
-		<input type="text" id="remindtime" name="remindtime" class="form-control">
-	</label>
-	<label>Comments:
-		<input type="text" id="comments" name="comments" class="form-control">
-	</label>
-		
+		<div class="input-group">
+		  <span class="input-group-addon" id="basic-addon1">Remind me</span>
+			<select id="reminders" name="reminders" class="form-control">
+				<option value="day">Every Day</option>
+				<option value="2days">Every Other Day</option>
+				<option value="week">Every Week</option>
+			</select>
+		</div>
+
+		<div class="input-group">
+		  <span class="input-group-addon" id="basic-addon1">At</span>
+		  <input type="text" id="remindtime" name="remindtime" class="form-control" placeholder="HH:MM" aria-describedby="basic-addon1">
+		</div>
+
 		<div style="text-align:right;margin-top:5px">
 		<input class="btn btn-primary" type="submit" value="Add event">
 		</div>
