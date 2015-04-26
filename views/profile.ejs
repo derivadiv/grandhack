@@ -171,7 +171,7 @@ $(':checkbox').click(function() {
 		type: 'POST',
 		url: '/checkevent',
 		data: {
-			eventid: this.id,
+			eventid: this.id
 		}
 	});
 	$(".today_checkbox:checked").replaceWith( '<span class="label label-success">:)</span>' );
