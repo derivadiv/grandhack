@@ -35,6 +35,7 @@
 
 
 
+
 <div class="container-fluid">
 <div class="row">
 <div class="col-sm-2 right-panel">
@@ -63,9 +64,6 @@
 					%>
 				<tr>
 
-				<!--
-<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo">Open modal for @mdo</button>
-				-->
 					<td><a class="details" data-toggle="modal" data-target="#myModal" 
 						data-goal="<%=user.events[e].title%>"
 						data-goal-id="<%=user.events[e]._id%>"
@@ -95,11 +93,7 @@
   New Event
 </button>
 
-
-	</div>
-</div>
-</div>
-
+<% include kitten %>
 <Script>
 
 $('#myModal').on('show.bs.modal', function (event) {
